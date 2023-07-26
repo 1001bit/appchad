@@ -2,34 +2,46 @@ package login
 
 import (
 	"fmt"
-	"net/http"
-	"text/template"
+
+	"github.com/McCooll75/appchad/crypt"
+	"github.com/McCooll75/appchad/database"
 )
 
-func login(user string, pass string) {
-	fmt.Println("login")
+func login(username, password string) string {
+	// TODO
+	return ""
 }
 
-func register(user string, pass string) {
-	fmt.Println("reg")
-}
+func register(username, pass string) string {
+	// if username exists
+	exists, err := database.UserExists(username)
 
-func LoginPage(w http.ResponseWriter, r *http.Request) {
-	data := ""
-
-	if r.Method == "POST" {
-		user, pass := r.FormValue("username"), r.FormValue("password")
-		if r.Form.Has("register") {
-			register(user, pass)
-		} else {
-			login(user, pass)
-		}
-	}
-
-	t, err := template.ParseFiles("login/login.html")
 	if err != nil {
-		fmt.Println("Error parsing login.html: ", err)
-		return
+		fmt.Println("Error checking user existance:", err)
+		return "error"
 	}
-	t.Execute(w, data)
+
+	if exists {
+		return username + " already exists!"
+	}
+
+	// if doesnt exist:
+	// TODO: Token
+	query := "INSERT INTO users (username, hash) VALUES (?, ?)"
+	// hash
+	hash, err := crypt.Hash(pass)
+
+	if err != nil {
+		fmt.Println("Error hashing password:", err)
+		return "error!"
+	}
+
+	// add user to db
+	_, err = database.Database.Exec(query, username, hash)
+	if err != nil {
+		fmt.Println("Error executing the query:", err)
+		return "error!"
+	}
+
+	return "success"
 }
