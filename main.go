@@ -1,33 +1,75 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/McCooll75/appchad/database"
-	"github.com/McCooll75/appchad/login"
+	"github.com/McCooll75/appchad/pages"
+	"github.com/McCooll75/appchad/pages/home"
+	"github.com/McCooll75/appchad/pages/login"
 	"github.com/joho/godotenv"
 )
 
+// is requesting user logged in
+func isLogged(w http.ResponseWriter, r *http.Request) bool {
+	tokenCookie, err1 := r.Cookie("token")
+	usernameCookie, err2 := r.Cookie("username")
+	// error
+	if err1 != nil && err2 != nil && (err1 != http.ErrNoCookie || err2 != http.ErrNoCookie) {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		log.Fatal(err1, err2)
+	}
+	// no needed cookies
+	if err1 == http.ErrNoCookie || err2 == http.ErrNoCookie {
+		return false
+	}
+
+	isValidToken, err := database.CheckUserToken(usernameCookie.Value, tokenCookie.Value)
+
+	// error
+	if err != nil {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		log.Fatal(err)
+	}
+	// invalid token
+	if !isValidToken {
+		return false
+	}
+
+	return true
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/login":
+	if !isLogged(w, r) {
 		login.LoginPage(w, r)
+		return
+	}
+
+	switch r.URL.Path {
+	case "/":
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	case "/home":
+		home.HomePage(w, r)
+	case "/logout":
+		pages.Logout(w, r)
 	default:
-		w.Write([]byte("<h1>404 Not found :(((</h1>"))
+		w.Write([]byte("<p>404 Not found :(<p>"))
 	}
 }
 
 func main() {
+	// environment
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading env:", err)
-		return
+		log.Fatal(err)
 	}
 
+	// database
 	database.InitDatabase()
 	defer database.Database.Close()
 
+	// http
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8080", nil)
 }
