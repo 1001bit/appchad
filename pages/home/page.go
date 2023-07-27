@@ -7,7 +7,7 @@ import (
 	"github.com/McCooll75/appchad/pages"
 )
 
-func HomePage(w http.ResponseWriter, r *http.Request) {
+func Page(w http.ResponseWriter, r *http.Request) {
 	cookieUsername, err := r.Cookie("username")
 	username := cookieUsername.Value
 	// error
@@ -16,5 +16,5 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		username = "unknown"
 	}
 
-	pages.LoadPage("pages/home/home.html", username, w)
+	pages.LoadPage("pages/home/index.html", username, w)
 }

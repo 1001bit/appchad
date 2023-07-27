@@ -6,7 +6,7 @@ import (
 	"github.com/McCooll75/appchad/pages"
 )
 
-func LoginPage(w http.ResponseWriter, r *http.Request) {
+func Page(w http.ResponseWriter, r *http.Request) {
 	data := ""
 
 	// if submitted login
@@ -30,5 +30,5 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	pages.LoadPage("pages/login/login.html", data, w)
+	pages.LoadPage("pages/login/index.html", data, w)
 }

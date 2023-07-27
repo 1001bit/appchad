@@ -6,6 +6,7 @@ import (
 
 	"github.com/McCooll75/appchad/database"
 	"github.com/McCooll75/appchad/pages"
+	"github.com/McCooll75/appchad/pages/chatchad"
 	"github.com/McCooll75/appchad/pages/home"
 	"github.com/McCooll75/appchad/pages/login"
 	"github.com/joho/godotenv"
@@ -20,7 +21,7 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		log.Fatal(err1, err2)
 	}
-	// no needed cookies
+	// no cookies
 	if err1 == http.ErrNoCookie || err2 == http.ErrNoCookie {
 		return false
 	}
@@ -40,24 +41,30 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
+// url handler
 func handler(w http.ResponseWriter, r *http.Request) {
 	if !isLogged(w, r) {
-		login.LoginPage(w, r)
+		login.Page(w, r)
 		return
 	}
 
 	switch r.URL.Path {
 	case "/":
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
-	case "/home":
-		home.HomePage(w, r)
 	case "/logout":
 		pages.Logout(w, r)
+	case "/home":
+		home.Page(w, r)
+	case "/chatchad":
+		chatchad.Page(w, r)
+	case "/chat":
+		chatchad.Chat(w, r)
 	default:
 		w.Write([]byte("<p>404 Not found :(<p>"))
 	}
 }
 
+// main
 func main() {
 	// environment
 	err := godotenv.Load()
@@ -70,6 +77,10 @@ func main() {
 	defer database.Database.Close()
 
 	// http
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+	mux := http.NewServeMux()
+	fileServer := http.FileServer(http.Dir("./static"))
+
+	mux.Handle("/lib/", http.StripPrefix("/lib", fileServer))
+	mux.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", mux)
 }
