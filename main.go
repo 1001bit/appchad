@@ -57,8 +57,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		home.Page(w, r)
 	case "/chatchad":
 		chatchad.Page(w, r)
-	case "/chat":
-		chatchad.Chat(w, r)
+	case "/chatchad/chat":
+		switch r.Method {
+		case "GET":
+			chatchad.ChatGet(w, r)
+		case "POST":
+			chatchad.ChatPost(w, r)
+		}
 	default:
 		w.Write([]byte("<p>404 Not found :(<p>"))
 	}
