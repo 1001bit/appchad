@@ -1,4 +1,4 @@
-package chatchad
+package chatchadpage
 
 import (
 	"log"

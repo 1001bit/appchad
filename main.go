@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 
+	chatchadapi "github.com/McCooll75/appchad/api/chatchad"
 	"github.com/McCooll75/appchad/database"
 	"github.com/McCooll75/appchad/pages"
-	"github.com/McCooll75/appchad/pages/chatchad"
+	chatchadpage "github.com/McCooll75/appchad/pages/chatchad"
 	"github.com/McCooll75/appchad/pages/home"
 	"github.com/McCooll75/appchad/pages/login"
 	"github.com/joho/godotenv"
@@ -48,22 +49,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO:
+	// Normal url Routing
+	// Login api
+	// blogchad
+
 	switch r.URL.Path {
 	case "/":
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	case "/api/chatchad":
+		switch r.Method {
+		case "GET":
+			chatchadapi.ChatGet(w, r)
+		case "POST":
+			chatchadapi.ChatPost(w, r)
+		}
 	case "/logout":
 		pages.Logout(w, r)
 	case "/home":
 		home.Page(w, r)
 	case "/chatchad":
-		chatchad.Page(w, r)
-	case "/chatchad/chat":
-		switch r.Method {
-		case "GET":
-			chatchad.ChatGet(w, r)
-		case "POST":
-			chatchad.ChatPost(w, r)
-		}
+		chatchadpage.Page(w, r)
 	default:
 		w.Write([]byte("<p>404 Not found :(<p>"))
 	}

@@ -2,22 +2,40 @@ const updateTime = 3000;
 const interval = setInterval(updateChat, updateTime);
 let lastMessageId = 0
 
-function postMessage(){
-    // TODO
+$(document).ready(() => {
+    updateChat();
+})
+
+function postMessage(msgText){
+    fetch("api/chatchad", {
+        method: "POST",
+
+        body: JSON.stringify({
+            text: msgText
+        }),
+
+        headers: { 
+            "Content-type": "application/json"
+        }
+    })
 }
 
 // fetch api and add messages to page
 function updateChat(){
-    lastMessageId = $(".message").last().attr("id")
+    try {
+        lastMessageId = $(".message").last().attr("id")
+    } catch {
+        lastMessageId = 0
+    }
 
-    fetch("chatchad/chat?id="+lastMessageId)
+    fetch("api/chatchad?id="+lastMessageId)
     .then(response => response.json())
     .then(data => {
         addNewMessages(data)
     })
 }
 
-// fetch database and add new messages to box
+// add messages to page from data
 function addNewMessages(data){
     let chatBox = $(".chat").last();
     let doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight;
@@ -35,8 +53,20 @@ function addNewMessages(data){
     }
 }
 
-/////////////////////
 // submit button
+$(".send").click(() => {
+    let typebox = $(".typebox")
+    if(typebox.val().length == 0){
+        return
+    }
+
+    postMessage(typebox.val())
+    typebox.val("")
+    updateChat()
+})
+
+//////////////////
+// STYLES
 function getCursorPosition(element, event) {
         const rect = element.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;

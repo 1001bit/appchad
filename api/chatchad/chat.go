@@ -1,4 +1,4 @@
-package chatchad
+package chatchadapi
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 	"github.com/McCooll75/appchad/database"
 )
 
+// GET - get messages below id
 type Message struct {
 	Id   int    `json:"id"`
 	User string `json:"user"`
@@ -23,8 +24,8 @@ func ChatGet(w http.ResponseWriter, r *http.Request) {
 	query := "SELECT * FROM chat WHERE id>?"
 	rows, err := database.Database.Query(query, lastMsgId)
 	if err != nil {
-		w.Write([]byte("{}"))
 		log.Println("Error querying chat tables")
+		w.Write([]byte("{}"))
 		return
 	}
 	defer rows.Close()
@@ -40,11 +41,34 @@ func ChatGet(w http.ResponseWriter, r *http.Request) {
 	jsonData, err := json.Marshal(messages)
 	if err != nil {
 		log.Println("Error converting to json:", err)
+		w.Write([]byte("{}"))
+		return
 	}
 
 	w.Write(jsonData)
 }
 
+// POST - post a message
 func ChatPost(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	message := Message{}
+	cookieUsername, err := r.Cookie("username")
+	message.User = cookieUsername.Value
+	// error
+	if err != nil {
+		log.Println(err)
+		message.User = "unknown"
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&message)
+	if err != nil {
+		http.Error(w, "Failed to parse json", http.StatusBadRequest)
+		return
+	}
+
+	if message.Text == "" {
+		return
+	}
+
+	query := "INSERT INTO chat (username, text) VALUES (?, ?)"
+	database.Database.Exec(query, message.User, message.Text)
 }
