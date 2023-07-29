@@ -1,4 +1,4 @@
-package pages
+package handlers
 
 import (
 	"html/template"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func LoadPage(filename, data string, w http.ResponseWriter) {
+func LoadTemplate(filename, data string, w http.ResponseWriter) {
 	// parse page
 	t, err := template.ParseFiles(filename)
 	if err != nil {

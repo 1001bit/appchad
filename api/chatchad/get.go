@@ -1,6 +1,7 @@
-package chatchadapi
+package chatchad
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -16,59 +17,43 @@ type Message struct {
 	Date string `json:"date"`
 }
 
+// Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
+	// returning json
 	w.Header().Set("Content-Type", "application/json")
 
+	// get id of last client message
 	lastMsgId := r.FormValue("id")
 
+	// get rows of messages
 	query := "SELECT * FROM chat WHERE id>?"
 	rows, err := database.Database.Query(query, lastMsgId)
 	if err != nil {
-		log.Println("Error querying chat tables")
-		w.Write([]byte("{}"))
+		if err != sql.ErrNoRows {
+			http.Error(w, "Error querying database", http.StatusInternalServerError)
+			log.Println("Error querying chat tables:", err)
+		}
 		return
 	}
 	defer rows.Close()
 
 	messages := []Message{}
 
+	// rows to a messages structure
 	for rows.Next() {
 		message := Message{}
 		rows.Scan(&message.Id, &message.User, &message.Text, &message.Date)
 		messages = append(messages, message)
 	}
 
+	// structure to json
 	jsonData, err := json.Marshal(messages)
 	if err != nil {
-		log.Println("Error converting to json:", err)
-		w.Write([]byte("{}"))
+		http.Error(w, "Error converting to json", http.StatusInternalServerError)
+		log.Println("Error querying chat tables:", err)
 		return
 	}
 
+	// return json
 	w.Write(jsonData)
-}
-
-// POST - post a message
-func ChatPost(w http.ResponseWriter, r *http.Request) {
-	message := Message{}
-	cookieUsername, err := r.Cookie("username")
-	message.User = cookieUsername.Value
-	// error
-	if err != nil {
-		log.Println(err)
-		message.User = "unknown"
-	}
-
-	err = json.NewDecoder(r.Body).Decode(&message)
-	if err != nil {
-		http.Error(w, "Failed to parse json", http.StatusBadRequest)
-		return
-	}
-
-	if message.Text == "" {
-		return
-	}
-
-	query := "INSERT INTO chat (username, text) VALUES (?, ?)"
-	database.Database.Exec(query, message.User, message.Text)
 }

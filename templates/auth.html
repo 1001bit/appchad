@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>auth | appchad</title>
+</head>
+<body>
+    <h2>Welcome to appchad!</h2>
+    <h3>Please, register or login below</h3>
+    <form id="loginForm">
+        <label for="username">Username: </label>
+        <input type="text" id="username" required><br>
+
+        <label for="password">Password: </label>
+        <input type="password" id="password" required><br>
+
+        <input type="submit", id="login", value="login">
+        <input type="submit", id="register", value="register">
+        <br>
+    </form>
+    <p id="message"></p>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="assets/auth/script.js"></script>
+</body>
+</html>

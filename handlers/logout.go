@@ -1,4 +1,4 @@
-package pages
+package handlers
 
 import "net/http"
 
@@ -15,5 +15,5 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, tokenCookie)
 	http.SetCookie(w, usernameCookie)
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

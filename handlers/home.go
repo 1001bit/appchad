@@ -1,13 +1,11 @@
-package home
+package handlers
 
 import (
 	"log"
 	"net/http"
-
-	"github.com/McCooll75/appchad/pages"
 )
 
-func Page(w http.ResponseWriter, r *http.Request) {
+func HomePage(w http.ResponseWriter, r *http.Request) {
 	cookieUsername, err := r.Cookie("username")
 	username := cookieUsername.Value
 	// error
@@ -16,5 +14,5 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		username = "unknown"
 	}
 
-	pages.LoadPage("pages/home/index.html", username, w)
+	LoadTemplate("templates/home.html", username, w)
 }
