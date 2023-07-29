@@ -15,6 +15,11 @@ type Input struct {
 
 // login
 func Login(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	w.Header().Set("Content-Type", "text/plain")
 
 	// get data from request

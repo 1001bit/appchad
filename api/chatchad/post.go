@@ -11,6 +11,11 @@ import (
 
 // POST - post a message
 func ChatPost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	// get message from request
 	message := Message{}
 	cookieUsername, err := r.Cookie("username")

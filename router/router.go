@@ -80,6 +80,8 @@ func Router(w http.ResponseWriter, r *http.Request) {
 		handlers.HomePage(w, r)
 	case "chatchad":
 		handlers.ChatchadPage(w, r)
+	case "blogchad":
+		handlers.BlogchadPage(w, r)
 	default:
 		w.Write([]byte("<p>404 Not found :(<p>"))
 	}

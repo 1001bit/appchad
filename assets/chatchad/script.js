@@ -2,33 +2,19 @@ const updateTime = 3000;
 const interval = setInterval(updateChat, updateTime);
 let lastMessageId = 0
 
-$(document).ready(() => {
-    updateChat();
+$(document).ready(async () => {
+    await updateChat();
 })
 
-function postMessage(msgText){
-    fetch("/api/chatchad", {
-        method: "POST",
-
-        body: JSON.stringify({
-            text: msgText
-        }),
-
-        headers: { 
-            "Content-type": "application/json"
-        }
-    })
-}
-
 // fetch api and add messages to page
-function updateChat(){
+async function updateChat(){
     try {
         lastMessageId = $(".message").last().attr("id")
     } catch {
         lastMessageId = 0
     }
 
-    fetch("api/chatchad?id="+lastMessageId)
+    await fetch("api/chatchad?id="+lastMessageId)
     .then(response => response.json())
     .then(data => {
         addNewMessages(data)
@@ -53,16 +39,32 @@ function addNewMessages(data){
     }
 }
 
+// post message to database
+async function postMessage(msgText){
+    await fetch("/api/chatchad", {
+        method: "POST",
+
+        body: JSON.stringify({
+            text: msgText
+        }),
+
+        headers: { 
+            "Content-type": "application/json"
+        }
+    })
+}
+
 // submit button
-$(".send").click(() => {
+$(".send").click(async () => {
     const typebox = $(".typebox")
     if(typebox.val().length == 0){
         return
     }
 
-    postMessage(typebox.val())
+    const text = typebox.val()
     typebox.val("")
-    updateChat()
+    await postMessage(text)
+    await updateChat()
 })
 
 //////////////////
