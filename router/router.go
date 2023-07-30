@@ -73,6 +73,7 @@ func Router(w http.ResponseWriter, r *http.Request) {
 			case http.MethodPost:
 				chatchad.ChatPost(w, r)
 			}
+			// chatchad.Chat(w, r)
 		}
 	case "logout":
 		handlers.Logout(w, r)

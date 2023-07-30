@@ -41,4 +41,7 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to post message", http.StatusInternalServerError)
 		return
 	}
+
+	// after posting message show the result to end user
+	ChatGet(w, r)
 }

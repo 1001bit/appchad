@@ -1,18 +1,40 @@
-const updateTime = 1000;
-const interval = setInterval(getChat, updateTime);
+const updateTime = 6000;
+let interval = window.setInterval(chatGet, updateTime);
 let lastMessageId = 0
 
-$(document).ready(getChat)
+$(document).ready(chatGet)
 
 // fetch api and add messages to page
-function getChat(){
+function chatGet(){
     try {
         lastMessageId = $(".message").last().attr("id")
     } catch {
         lastMessageId = 0
     }
 
-    fetch("api/chatchad?id="+lastMessageId)
+    fetch("api/chatchad?id="+lastMessageId, {
+        method: "GET"
+    })
+    .then(response => response.json())
+    .then(data => {
+        addNewMessages(data)
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
+
+// post message to chat
+function chatPost(msgText){
+    try {
+        lastMessageId = $(".message").last().attr("id")
+    } catch {
+        lastMessageId = 0
+    }
+
+    fetch("api/chatchad?id="+lastMessageId + "&text="+msgText, {
+        method: "POST"
+    })
     .then(response => response.json())
     .then(data => {
         addNewMessages(data)
@@ -40,15 +62,8 @@ function addNewMessages(data){
     }
 }
 
-// post message to database
-function postMessage(msgText){
-    fetch("/api/chatchad?text="+msgText, {
-        method: "POST"
-    })
-}
-
 // submit button
-$(".send").click(() => {
+$(".send").click(async () => {
     const typebox = $(".typebox")
     if(typebox.val().length == 0){
         return
@@ -57,8 +72,10 @@ $(".send").click(() => {
     const text = typebox.val()
     typebox.val("")
 
-    postMessage(text)
-    getChat()
+    window.clearInterval(interval)
+    interval = window.setInterval(chatGet, updateTime);
+
+    chatPost(text)
 })
 
 //////////////////

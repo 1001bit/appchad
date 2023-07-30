@@ -19,11 +19,6 @@ type Message struct {
 
 // Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
-		return
-	}
-
 	// returning json
 	w.Header().Set("Content-Type", "application/json")
 
