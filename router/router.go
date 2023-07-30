@@ -68,9 +68,9 @@ func Router(w http.ResponseWriter, r *http.Request) {
 		switch splitUrl[1] {
 		case "chatchad":
 			switch r.Method {
-			case "GET":
+			case http.MethodGet:
 				chatchad.ChatGet(w, r)
-			case "POST":
+			case http.MethodPost:
 				chatchad.ChatPost(w, r)
 			}
 		}

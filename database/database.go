@@ -21,11 +21,14 @@ func InitDatabase() {
 	Database, err = sql.Open("mysql", db_user+":"+db_pass+"@("+db_addr+")/"+db_name)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("error opening database:", err)
 	}
+
+	initStatements()
+
 	err = Database.Ping()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error pinging database:", err)
 	}
 }
 

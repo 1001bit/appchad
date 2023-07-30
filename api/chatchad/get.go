@@ -19,8 +19,8 @@ type Message struct {
 
 // Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
+	if r.Method != http.MethodGet {
+		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -31,8 +31,7 @@ func ChatGet(w http.ResponseWriter, r *http.Request) {
 	lastMsgId := r.FormValue("id")
 
 	// get rows of messages
-	query := "SELECT * FROM chat WHERE id>?"
-	rows, err := database.Database.Query(query, lastMsgId)
+	rows, err := database.Statements["ChatGet"].Query(lastMsgId)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			http.Error(w, "Error querying database", http.StatusInternalServerError)

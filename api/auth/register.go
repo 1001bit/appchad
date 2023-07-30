@@ -11,7 +11,7 @@ import (
 
 // register
 func Register(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
 		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
 		return
 	}

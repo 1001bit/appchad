@@ -1,29 +1,30 @@
-const updateTime = 3000;
-const interval = setInterval(updateChat, updateTime);
+const updateTime = 1000;
+const interval = setInterval(getChat, updateTime);
 let lastMessageId = 0
 
-$(document).ready(async () => {
-    await updateChat();
-})
+$(document).ready(getChat)
 
 // fetch api and add messages to page
-async function updateChat(){
+function getChat(){
     try {
         lastMessageId = $(".message").last().attr("id")
     } catch {
         lastMessageId = 0
     }
 
-    await fetch("api/chatchad?id="+lastMessageId)
+    fetch("api/chatchad?id="+lastMessageId)
     .then(response => response.json())
     .then(data => {
         addNewMessages(data)
+    })
+    .catch(error => {
+        console.log(error)
     })
 }
 
 // add messages to page from data
 function addNewMessages(data){
-    const chatBox = $(".chat").last();
+    const chatBox = $(".chat:last");
     const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight;
     for(let i = 0; i < data.length; i++){
         let message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
@@ -40,22 +41,14 @@ function addNewMessages(data){
 }
 
 // post message to database
-async function postMessage(msgText){
-    await fetch("/api/chatchad", {
-        method: "POST",
-
-        body: JSON.stringify({
-            text: msgText
-        }),
-
-        headers: { 
-            "Content-type": "application/json"
-        }
+function postMessage(msgText){
+    fetch("/api/chatchad?text="+msgText, {
+        method: "POST"
     })
 }
 
 // submit button
-$(".send").click(async () => {
+$(".send").click(() => {
     const typebox = $(".typebox")
     if(typebox.val().length == 0){
         return
@@ -63,8 +56,9 @@ $(".send").click(async () => {
 
     const text = typebox.val()
     typebox.val("")
-    await postMessage(text)
-    await updateChat()
+
+    postMessage(text)
+    getChat()
 })
 
 //////////////////

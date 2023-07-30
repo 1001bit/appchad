@@ -10,7 +10,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	username := cookieUsername.Value
 	// error
 	if err != nil {
-		log.Println(err)
+		log.Println("error getting cookie:", err)
 		username = "unknown"
 	}
 

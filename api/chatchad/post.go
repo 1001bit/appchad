@@ -1,52 +1,43 @@
 package chatchad
 
 import (
-	"encoding/json"
+	"html"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/McCooll75/appchad/database"
 )
 
 // POST - post a message
 func ChatPost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
+	if r.Method != http.MethodPost {
+		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// get message from request
 	message := Message{}
 	cookieUsername, err := r.Cookie("username")
-	message.User = cookieUsername.Value
 
 	// error
 	if err != nil {
-		log.Println(err)
+		log.Println("error getting cookie:", err)
 		message.User = "unknown"
+	} else {
+		message.User = cookieUsername.Value
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&message)
-	if err != nil {
-		log.Println(err)
-		http.Error(w, "Failed to parse json", http.StatusBadRequest)
-		return
-	}
+	message.Text = html.EscapeString(r.FormValue("text"))
 
 	// no empty messages
 	if message.Text == "" {
 		return
 	}
 
-	message.Text = strings.Replace(message.Text, "<", "&lt;", -1)
-	message.Text = strings.Replace(message.Text, ">", "&gt;", -1)
-
-	// post message to the databaes
-	query := "INSERT INTO chat (username, text) VALUES (?, ?)"
-	_, err = database.Database.Exec(query, message.User, message.Text)
+	// post message to the database
+	_, err = database.Statements["ChatPost"].Exec(message.User, message.Text)
 	if err != nil {
-		log.Println(err)
+		log.Println("error executing statement:", err)
 		http.Error(w, "Failed to post message", http.StatusInternalServerError)
 		return
 	}

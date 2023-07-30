@@ -20,6 +20,9 @@ func main() {
 	// database
 	database.InitDatabase()
 	defer database.Database.Close()
+	for _, stmt := range database.Statements {
+		defer stmt.Close()
+	}
 
 	// http
 	mux := http.NewServeMux()
