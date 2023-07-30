@@ -1,4 +1,4 @@
-const updateTime = 6000;
+const updateTime = 4000;
 let interval = window.setInterval(chatGet, updateTime);
 let lastMessageId = 0
 
@@ -46,7 +46,7 @@ function chatPost(msgText){
 
 // add messages to page from data
 function addNewMessages(data){
-    const chatBox = $(".chat:last");
+    const chatBox = $("#chat");
     const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight;
     for(let i = 0; i < data.length; i++){
         let message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
@@ -63,8 +63,8 @@ function addNewMessages(data){
 }
 
 // submit button
-$(".send").click(async () => {
-    const typebox = $(".typebox")
+$(".send").click(() => {
+    const typebox = $(".typebox").last()
     if(typebox.val().length == 0){
         return
     }
