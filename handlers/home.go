@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func HomePage(w http.ResponseWriter, r *http.Request) {
+func Home(w http.ResponseWriter, r *http.Request) {
 	cookieUsername, err := r.Cookie("username")
 	username := cookieUsername.Value
 	// error

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func ChatchadPage(w http.ResponseWriter, r *http.Request) {
+func Chatchad(w http.ResponseWriter, r *http.Request) {
 	cookieUsername, err := r.Cookie("username")
 	username := cookieUsername.Value
 	// error

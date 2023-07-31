@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func LoadTemplate(filename, data string, w http.ResponseWriter) {
+func LoadTemplate(filename string, data any, w http.ResponseWriter) {
 	// parse page
 	t, err := template.ParseFiles(filename)
 	if err != nil {

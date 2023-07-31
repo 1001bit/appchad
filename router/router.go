@@ -3,6 +3,7 @@ package router
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/McCooll75/appchad/api/auth"
@@ -45,7 +46,8 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 
 // url handler
 func Router(w http.ResponseWriter, r *http.Request) {
-	splitUrl := strings.Split(r.URL.Path, "/")[1:]
+	splitUrl := append(strings.Split(r.URL.Path, "/")[1:], "")
+
 	// if not logged
 	if !isLogged(w, r) {
 		if splitUrl[0] == "api" && splitUrl[1] == "auth" {
@@ -58,7 +60,7 @@ func Router(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		handlers.AuthPage(w, r)
+		handlers.Auth(w, r)
 		return
 	}
 
@@ -73,17 +75,33 @@ func Router(w http.ResponseWriter, r *http.Request) {
 			case http.MethodPost:
 				chatchad.ChatPost(w, r)
 			}
-			// chatchad.Chat(w, r)
 		}
 	case "logout":
 		handlers.Logout(w, r)
 	case "", "home":
-		handlers.HomePage(w, r)
+		handlers.Home(w, r)
 	case "chatchad":
-		handlers.ChatchadPage(w, r)
+		handlers.Chatchad(w, r)
 	case "blogchad":
-		handlers.BlogchadPage(w, r)
+		switch splitUrl[1] {
+		case "":
+			handlers.Blogchad(w, r)
+		case "write":
+			handlers.BlogchadWrite(w, r)
+		case "article":
+			if splitUrl[2] == "" {
+				http.Error(w, "incorrect id", http.StatusBadRequest)
+				return
+			}
+			id, err := strconv.Atoi(splitUrl[2])
+			if err != nil {
+				log.Println("error converting to int:", err)
+				http.Error(w, "incorrect id", http.StatusBadRequest)
+				return
+			}
+			handlers.BlogchadArticle(w, r, id)
+		}
 	default:
-		w.Write([]byte("<p>404 Not found :(<p>"))
+		http.Error(w, "404 not found!!", http.StatusNotFound)
 	}
 }
