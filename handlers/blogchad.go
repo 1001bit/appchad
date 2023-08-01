@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/McCooll75/appchad/api/blogchad"
+	"github.com/go-chi/chi/v5"
 )
 
 type Data struct {
@@ -20,7 +22,14 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 }
 
 // see article
-func BlogchadArticle(w http.ResponseWriter, r *http.Request, id int) {
+func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+
+	if err != nil {
+		http.Error(w, "incorrect id", http.StatusBadRequest)
+		return
+	}
+
 	article, err := blogchad.GetArticle(id)
 	if err != nil {
 		if err != sql.ErrNoRows {

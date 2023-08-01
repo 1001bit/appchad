@@ -25,10 +25,16 @@ func main() {
 	}
 
 	// http
-	mux := http.NewServeMux()
-	fileServer := http.FileServer(http.Dir("./assets"))
+	// mux := http.NewServeMux()
+	// fileServer := http.FileServer(http.Dir("./assets"))
 
-	mux.Handle("/assets/", http.StripPrefix("/assets", fileServer))
-	mux.HandleFunc("/", router.Router)
-	http.ListenAndServe(":8080", mux)
+	// mux.Handle("/assets/", http.StripPrefix("/assets", fileServer))
+	// mux.HandleFunc("/", router.Router)
+	// http.ListenAndServe(":8080", mux)
+
+	r := router.RouterSetup()
+	fileServer := http.FileServer(http.Dir("./assets"))
+	r.Handle("/assets/*", http.StripPrefix("/assets", fileServer))
+
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
