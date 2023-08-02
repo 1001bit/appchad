@@ -5,14 +5,14 @@ let lastMessageId = 0
 $(document).ready(chatGet)
 
 // fetch api and add messages to page
-function chatGet(){
+async function chatGet(){
     try {
         lastMessageId = $(".message").last().attr("id")
     } catch {
         lastMessageId = 0
     }
 
-    fetch("api/chatchad?id="+lastMessageId, {
+    return fetch("api/chatchad?id="+lastMessageId, {
         method: "GET"
     })
     .then(response => response.json())
@@ -25,20 +25,20 @@ function chatGet(){
 }
 
 // post message to chat
-function chatPost(msgText){
-    try {
-        lastMessageId = $(".message").last().attr("id")
-    } catch {
-        lastMessageId = 0
-    }
+async function chatPost(msgText){
+    // try {
+    //     lastMessageId = $(".message").last().attr("id")
+    // } catch {
+    //     lastMessageId = 0
+    // }
 
-    fetch("api/chatchad?id="+lastMessageId + "&text="+msgText, {
+    return fetch("api/chatchad?text="+msgText, {
         method: "POST"
     })
-    .then(response => response.json())
-    .then(data => {
-        addNewMessages(data)
-    })
+    // .then(response => response.json())
+    // .then(data => {
+    //     addNewMessages(data)
+    // })
     .catch(error => {
         console.log(error)
     })
@@ -63,7 +63,7 @@ function addNewMessages(data){
 }
 
 // submit button
-$(".send").click(() => {
+$(".send").click(async () => {
     const typebox = $(".typebox").last()
     if(typebox.val().length == 0){
         return
@@ -75,7 +75,13 @@ $(".send").click(() => {
     window.clearInterval(interval)
     interval = window.setInterval(chatGet, updateTime);
 
-    chatPost(text)
+    let start = Date.now()
+
+    let postPromise = chatPost(text)
+    postPromise.then(() => {
+        chatGet()
+        console.log(Date.now() - start)
+    })
 })
 
 //////////////////

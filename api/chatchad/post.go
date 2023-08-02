@@ -43,5 +43,5 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// after posting message show the result to end user
-	ChatGet(w, r)
+	// ChatGet(w, r)
 }
