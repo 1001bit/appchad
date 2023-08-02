@@ -56,8 +56,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add user to the database
-	query := "INSERT INTO users (username, hash) VALUES (?, ?)"
-	_, err = database.Database.Exec(query, inputData.Username, hash)
+	_, err = database.Statements["Register"].Exec(inputData.Username, hash)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Database error", http.StatusInternalServerError)

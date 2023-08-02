@@ -5,14 +5,14 @@ let lastMessageId = 0
 $(document).ready(chatGet)
 
 // fetch api and add messages to page
-async function chatGet(){
+function chatGet(){
     try {
         lastMessageId = $(".message").last().attr("id")
     } catch {
         lastMessageId = 0
     }
 
-    return fetch("api/chatchad?id="+lastMessageId, {
+    fetch("api/chatchad?id="+lastMessageId, {
         method: "GET"
     })
     .then(response => response.json())
@@ -26,19 +26,11 @@ async function chatGet(){
 
 // post message to chat
 async function chatPost(msgText){
-    // try {
-    //     lastMessageId = $(".message").last().attr("id")
-    // } catch {
-    //     lastMessageId = 0
-    // }
-
-    return fetch("api/chatchad?text="+msgText, {
-        method: "POST"
+    return fetch("api/chatchad", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text: msgText}),
     })
-    // .then(response => response.json())
-    // .then(data => {
-    //     addNewMessages(data)
-    // })
     .catch(error => {
         console.log(error)
     })
@@ -75,12 +67,8 @@ $(".send").click(async () => {
     window.clearInterval(interval)
     interval = window.setInterval(chatGet, updateTime);
 
-    let start = Date.now()
-
-    let postPromise = chatPost(text)
-    postPromise.then(() => {
+    chatPost(text).then(() => {
         chatGet()
-        console.log(Date.now() - start)
     })
 })
 

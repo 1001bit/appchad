@@ -34,17 +34,15 @@ func InitDatabase() {
 
 // nickname exists in database
 func UserExists(username string) (bool, error) {
-	query := "SELECT EXISTS(SELECT 1 FROM users WHERE username = ?)"
 	var exists bool
-	err := Database.QueryRow(query, username).Scan(&exists)
+	err := Statements["UserExists"].QueryRow(username).Scan(&exists)
 	return exists, err
 }
 
 // is token correct for username
 func CheckUserToken(username, token string) (bool, error) {
-	query := "SELECT token FROM users WHERE username = ?"
 	var dbToken string
-	err := Database.QueryRow(query, username).Scan(&dbToken)
+	err := Statements["TokenCorrect"].QueryRow(username).Scan(&dbToken)
 	if err == sql.ErrNoRows {
 		return false, nil
 	}
@@ -54,9 +52,8 @@ func CheckUserToken(username, token string) (bool, error) {
 
 // is password correct for username
 func CheckUserPassword(username, password string) (bool, error) {
-	query := "SELECT hash FROM users WHERE username = ?"
 	var dbPassword string
-	err := Database.QueryRow(query, username).Scan(&dbPassword)
+	err := Statements["PasswordCorrect"].QueryRow(username).Scan(&dbPassword)
 	if err == sql.ErrNoRows {
 		return false, nil
 	}

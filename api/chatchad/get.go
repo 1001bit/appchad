@@ -19,9 +19,6 @@ type Message struct {
 
 // Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
-	// returning json
-	w.Header().Set("Content-Type", "application/json")
-
 	// get id of last client message
 	lastMsgId := r.FormValue("id")
 
@@ -53,6 +50,7 @@ func ChatGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// return json
+	// returning json
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }

@@ -23,8 +23,7 @@ func success(w http.ResponseWriter, r *http.Request, username string) {
 		log.Println(err)
 	}
 
-	query := "UPDATE users SET token=? WHERE username=?"
-	_, err = database.Database.Exec(query, hashToken, username)
+	_, err = database.Statements["InsertToken"].Exec(hashToken, username)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		log.Println(err)
