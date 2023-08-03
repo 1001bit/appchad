@@ -53,6 +53,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "server error", http.StatusInternalServerError)
+		return
 	}
 
 	// add user to the database

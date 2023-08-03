@@ -37,6 +37,7 @@ func RouterSetup() *chi.Mux {
 		r.Get("/chatchad", handlers.Chatchad)
 		r.Get("/blogchad", handlers.Blogchad)
 		r.Get("/blogchad/write", handlers.BlogchadWrite)
+		r.Post("/blogchad/write", handlers.BlogchadPost)
 		r.Get("/blogchad/article/{id}", handlers.BlogchadArticle)
 	})
 

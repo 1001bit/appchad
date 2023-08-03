@@ -1,4 +1,4 @@
-const updateTime = 4000;
+const updateTime = 3000;
 let interval = window.setInterval(chatGet, updateTime);
 let lastMessageId = 0
 
@@ -6,18 +6,15 @@ $(document).ready(chatGet)
 
 // fetch api and add messages to page
 function chatGet(){
-    try {
-        lastMessageId = $(".message").last().attr("id")
-    } catch {
-        lastMessageId = 0
-    }
-
-    fetch("api/chatchad?id="+lastMessageId, {
+    return fetch(`api/chatchad?id=${lastMessageId}`, {
         method: "GET"
     })
     .then(response => response.json())
     .then(data => {
-        addNewMessages(data)
+        if (data.length > 0){
+            lastMessageId = data[data.length - 1].id;
+            addNewMessages(data)
+        }
     })
     .catch(error => {
         console.log(error)
@@ -40,14 +37,18 @@ async function chatPost(msgText){
 function addNewMessages(data){
     const chatBox = $("#chat");
     const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight;
+    const fragment = document.createDocumentFragment()
+
     for(let i = 0; i < data.length; i++){
         let message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
         let date = $("<pre></pre>").text(data[i]['date']);
         let text = $("<pre></pre>").html(`${data[i]['user']}: ${data[i]['text']}`);
         message.append(date);
         message.append(text);
-        chatBox.append(message);
+        fragment.append(message[0]);
     }
+    chatBox.append(fragment)
+
     // automatically scroll down
     if(doScroll){
         chatBox.scrollTop(chatBox[0].scrollHeight);
@@ -66,7 +67,7 @@ $(".send").click(async () => {
 
     window.clearInterval(interval)
     interval = window.setInterval(chatGet, updateTime);
-
+    
     chatPost(text).then(() => {
         chatGet()
     })

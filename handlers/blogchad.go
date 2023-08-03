@@ -21,6 +21,11 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 	LoadTemplate("templates/blogchad/write.html", "", w)
 }
 
+// post article to world
+func BlogchadPost(w http.ResponseWriter, r *http.Request) {
+	// TODO: Connect to api after getting values
+}
+
 // see article
 func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))

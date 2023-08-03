@@ -15,18 +15,21 @@ func success(w http.ResponseWriter, r *http.Request, username string) {
 	if err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		log.Println(err)
+		return
 	}
 
 	hashToken, err := crypt.Hash(token)
 	if err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		log.Println(err)
+		return
 	}
 
 	_, err = database.Statements["InsertToken"].Exec(hashToken, username)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		log.Println(err)
+		return
 	}
 
 	// setting cookie
