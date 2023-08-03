@@ -10,8 +10,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	username := cookieUsername.Value
 	// error
 	if err != nil {
-		log.Println("error getting cookie:", err)
-		username = "unknown"
+		log.Println(err)
+		http.Error(w, "no cookie", http.StatusBadRequest)
+		return
 	}
 
 	LoadTemplate("templates/home.html", username, w)

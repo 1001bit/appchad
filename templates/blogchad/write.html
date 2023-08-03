@@ -8,9 +8,23 @@
 <body>
     <h2>Write here:</h2>
     <form method="POST" action="/blogchad/write">
-        <label for="title">Article title:</label>
-        <input type="text" name="title">
-        <!-- TODO: Image load and text (and styles idk) -->
+        <div>
+            <label for="title">Article title:</label>
+            <input type="text" name="title" id="title" style="font-size: large; width: 500px;" required>
+        </div>
+        <br>
+        <div>
+            <label for="image">Image:</label>
+            <input type="file" name="image" id="image" style="font-size: large;">
+        </div>
+        <br>
+        <div>
+            <label for="text">Text:</label>
+            <textarea type="text" name="text" id="text" rows="20" cols="100" style="font-size: x-large; background-color:aliceblue;" required></textarea>
+        </div>
+        <br>
+
+        <input type="submit" value="Post" style="font-size: xx-large;">
     </form>
 </body>
 </html>

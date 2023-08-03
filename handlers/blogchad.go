@@ -11,8 +11,14 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type Data struct {
+type PageLoadData struct {
 	Articles []blogchad.Article
+	Username string
+}
+
+type WriteData struct {
+	Title    string
+	Text     string
 	Username string
 }
 
@@ -23,7 +29,26 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 
 // post article to world
 func BlogchadPost(w http.ResponseWriter, r *http.Request) {
-	// TODO: Connect to api after getting values
+	if err := r.ParseForm(); err != nil {
+		log.Println("error parsing form:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+
+	cookieUsername, err := r.Cookie("username")
+	// error
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "no cookie", http.StatusBadRequest)
+		return
+	}
+
+	// get data of
+	data := WriteData{}
+	data.Title = r.PostFormValue("title")
+	data.Text = r.PostFormValue("text")
+	data.Username = cookieUsername.Value
+	// TODO: IMAGE
 }
 
 // see article
@@ -50,15 +75,17 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 
 // blogchad main
 func Blogchad(w http.ResponseWriter, r *http.Request) {
-	data := Data{}
+	data := PageLoadData{}
 	cookieUsername, err := r.Cookie("username")
 	data.Username = cookieUsername.Value
 	// error
 	if err != nil {
 		log.Println(err)
-		data.Username = "unknown"
+		http.Error(w, "no cookie", http.StatusBadRequest)
+		return
 	}
 
+	// get wall of articles
 	wall, err := blogchad.GetWall()
 	if err != nil {
 		log.Println("error getting blog wall:", err)
@@ -67,7 +94,6 @@ func Blogchad(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = json.Unmarshal(wall, &data.Articles)
-
 	if err != nil {
 		log.Println("error umarshaling blog wall:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
