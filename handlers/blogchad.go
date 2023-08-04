@@ -8,17 +8,12 @@ import (
 	"strconv"
 
 	"github.com/McCooll75/appchad/api/blogchad"
+	"github.com/McCooll75/appchad/files"
 	"github.com/go-chi/chi/v5"
 )
 
 type PageLoadData struct {
 	Articles []blogchad.Article
-	Username string
-}
-
-type WriteData struct {
-	Title    string
-	Text     string
 	Username string
 }
 
@@ -29,7 +24,7 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 
 // post article to world
 func BlogchadPost(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		log.Println("error parsing form:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
@@ -43,12 +38,26 @@ func BlogchadPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get data of
-	data := WriteData{}
-	data.Title = r.PostFormValue("title")
-	data.Text = r.PostFormValue("text")
-	data.Username = cookieUsername.Value
-	// TODO: IMAGE
+	// get data
+	newArticle := blogchad.Article{}
+	newArticle.Title = r.PostFormValue("title")
+	newArticle.Text = r.PostFormValue("text")
+	newArticle.User = cookieUsername.Value
+	newArticle.Image, err = files.FileUpload(r)
+
+	if err != nil {
+		log.Println("error uploading a file:", err)
+		newArticle.Image = ""
+	}
+
+	id, err := blogchad.PostArticle(newArticle)
+	if err != nil {
+		log.Println("error posting an article:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/blogchad/article/"+id, http.StatusSeeOther)
 }
 
 // see article

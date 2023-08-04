@@ -13,32 +13,44 @@ func RouterSetup() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
+	router.Use(middleware.RedirectSlashes)
 
+	// for not logged people
 	router.Group(func(r chi.Router) {
 		r.Use(guestMiddleware)
 
 		// api
 		r.Post("/api/auth/login", auth.Login)
 		r.Post("/api/auth/register", auth.Register)
+
 		// pages
-		r.Get("/{any}", handlers.Auth)
+		r.Get("/", handlers.Auth)
+		r.Get("/auth", handlers.Auth)
 	})
 
+	// for logged people
 	router.Group(func(r chi.Router) {
 		r.Use(wideMiddleware)
 
 		// api
 		r.Post("/api/chatchad", chatchad.ChatPost)
 		r.Get("/api/chatchad", chatchad.ChatGet)
-		// pages
-		r.Get("/logout", handlers.Logout)
-		r.Get("/", handlers.Home)
-		r.Get("/home", handlers.Home)
-		r.Get("/chatchad", handlers.Chatchad)
-		r.Get("/blogchad", handlers.Blogchad)
-		r.Get("/blogchad/write", handlers.BlogchadWrite)
+
 		r.Post("/blogchad/write", handlers.BlogchadPost)
-		r.Get("/blogchad/article/{id}", handlers.BlogchadArticle)
+
+		// pages
+		r.Group(func(r chi.Router) {
+			r.Use(headerMiddleware)
+
+			r.Get("/logout", handlers.Logout)
+			r.Get("/", handlers.Home)
+			r.Get("/home", handlers.Home)
+			r.Get("/chatchad", handlers.Chatchad)
+
+			r.Get("/blogchad", handlers.Blogchad)
+			r.Get("/blogchad/write", handlers.BlogchadWrite)
+			r.Get("/blogchad/article/{id}", handlers.BlogchadArticle)
+		})
 	})
 
 	return router
