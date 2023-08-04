@@ -3,7 +3,7 @@ package blogchad
 import "github.com/McCooll75/appchad/database"
 
 type Article struct {
-	Id    int    `json:"id"`
+	Id    string `json:"id"`
 	Title string `json:"title"`
 	Date  string `json:"date"`
 	User  string `json:"user"`

@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/McCooll75/appchad/api/auth"
+	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/chatchad"
 	"github.com/McCooll75/appchad/handlers"
 	"github.com/go-chi/chi/v5"
@@ -35,14 +36,14 @@ func RouterSetup() *chi.Mux {
 		// api
 		r.Post("/api/chatchad", chatchad.ChatPost)
 		r.Get("/api/chatchad", chatchad.ChatGet)
+		r.Post("/api/blogchad", blogchad.PostArticle)
 
-		r.Post("/blogchad/write", handlers.BlogchadPost)
+		r.Get("/logout", handlers.Logout)
 
 		// pages
 		r.Group(func(r chi.Router) {
 			r.Use(headerMiddleware)
 
-			r.Get("/logout", handlers.Logout)
 			r.Get("/", handlers.Home)
 			r.Get("/home", handlers.Home)
 			r.Get("/chatchad", handlers.Chatchad)

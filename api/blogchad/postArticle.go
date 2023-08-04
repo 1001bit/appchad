@@ -1,24 +1,64 @@
 package blogchad
 
 import (
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/McCooll75/appchad/database"
 )
 
-func PostArticle(article Article) (string, error) {
-	if article.Image != "" {
-		article.Image = "/assets/files/" + article.Image
+func PostArticle(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		log.Println("error parsing form:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
 	}
 
-	result, err := database.Statements["BlogPost"].Exec(article.Title, article.User, article.Text, article.Image)
+	cookieUsername, err := r.Cookie("username")
+	// error
 	if err != nil {
-		return "", err
+		log.Println(err)
+		http.Error(w, "no cookie", http.StatusBadRequest)
+		return
 	}
+
+	// get data
+	newArticle := Article{}
+	newArticle.Title = r.PostFormValue("title")
+	newArticle.Text = r.PostFormValue("text")
+	newArticle.User = cookieUsername.Value
+	newArticle.Image, err = imageUpload(r)
+
+	if err != nil {
+		log.Println("error uploading a file:", err)
+		newArticle.Image = ""
+	}
+
+	result, err := database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.User, newArticle.Text, newArticle.Image)
+	if err != nil {
+		log.Println("error posting to blog:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+
 	id, err := result.LastInsertId()
 	if err != nil {
-		return "", err
+		log.Println("error getting last id:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+	newArticle.Id = strconv.Itoa(int(id))
+
+	if err != nil {
+		log.Println("error posting an article:", err)
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
 	}
 
-	return strconv.Itoa(int(id)), nil
+	http.Redirect(w, r, "/blogchad/article/"+newArticle.Id, http.StatusSeeOther)
+
+	if newArticle.Image != "" {
+		newArticle.Image = "/assets/files/" + newArticle.Image
+	}
 }

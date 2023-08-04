@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/McCooll75/appchad/api/blogchad"
-	"github.com/McCooll75/appchad/files"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -20,44 +19,6 @@ type PageLoadData struct {
 // create article
 func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 	LoadTemplate("templates/blogchad/write.html", "", w)
-}
-
-// post article to world
-func BlogchadPost(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		log.Println("error parsing form:", err)
-		http.Error(w, "server error", http.StatusInternalServerError)
-		return
-	}
-
-	cookieUsername, err := r.Cookie("username")
-	// error
-	if err != nil {
-		log.Println(err)
-		http.Error(w, "no cookie", http.StatusBadRequest)
-		return
-	}
-
-	// get data
-	newArticle := blogchad.Article{}
-	newArticle.Title = r.PostFormValue("title")
-	newArticle.Text = r.PostFormValue("text")
-	newArticle.User = cookieUsername.Value
-	newArticle.Image, err = files.FileUpload(r)
-
-	if err != nil {
-		log.Println("error uploading a file:", err)
-		newArticle.Image = ""
-	}
-
-	id, err := blogchad.PostArticle(newArticle)
-	if err != nil {
-		log.Println("error posting an article:", err)
-		http.Error(w, "server error", http.StatusInternalServerError)
-		return
-	}
-
-	http.Redirect(w, r, "/blogchad/article/"+id, http.StatusSeeOther)
 }
 
 // see article
@@ -79,6 +40,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 not found!!", http.StatusNotFound)
 		return
 	}
+	log.Println(article.Image)
 	LoadTemplate("templates/blogchad/article.html", article, w)
 }
 

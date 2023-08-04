@@ -23,6 +23,7 @@ func main() {
 		defer stmt.Close()
 	}
 
+	// http
 	r := router.RouterSetup()
 	fileServer := http.FileServer(http.Dir("./assets"))
 	r.Handle("/assets/*", http.StripPrefix("/assets", fileServer))

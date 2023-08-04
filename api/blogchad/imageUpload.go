@@ -1,4 +1,4 @@
-package files
+package blogchad
 
 import (
 	"io"
@@ -11,7 +11,7 @@ import (
 
 var allFileExt = []string{"jpeg", "jpg", "png"}
 
-func FileUpload(r *http.Request) (string, error) {
+func imageUpload(r *http.Request) (string, error) {
 	// ParseMultipartForm parses a request body as multipart/form-data
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		return "", err
@@ -34,19 +34,19 @@ func FileUpload(r *http.Request) (string, error) {
 		}
 	}
 
-	if compatible == false {
+	if !compatible {
 		return "", nil
 	}
 
-	hex, err := crypt.RandomHex(16)
+	hex, err := crypt.RandomHex(8)
 	if err != nil {
 		return "", err
 	}
 
-	newName := hex + "." + fileExt
+	newName := "/assets/files/" + hex + "." + fileExt
 
 	// This is path which we want to store the file
-	f, err := os.OpenFile("assets/files/"+newName, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(newName[1:], os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
 		return "", err
