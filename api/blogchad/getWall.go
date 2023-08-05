@@ -20,6 +20,11 @@ func GetWall() ([]byte, error) {
 	for rows.Next() {
 		article := Article{}
 		rows.Scan(&article.Id, &article.Title, &article.Date, &article.User, &article.Text, &article.Image)
+		// shorten title
+		if len(article.Title) > 64 {
+			article.Title = article.Title[:64] + "..."
+		}
+
 		articles = append(articles, article)
 	}
 

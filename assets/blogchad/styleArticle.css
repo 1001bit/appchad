@@ -6,3 +6,7 @@ body {
     word-wrap: break-word;
     font-size: x-large;
 }
+
+pre {
+    white-space: pre-wrap;
+}

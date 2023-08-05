@@ -17,7 +17,7 @@ type Input struct {
 // login
 func Login(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "not allowerd method", http.StatusMethodNotAllowed)
+		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -33,7 +33,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if inputData.Username != html.EscapeString(inputData.Username) {
-		http.Error(w, "username must not contain special characters!", http.StatusBadRequest)
+		http.Error(w, "username must contain no special characters!", http.StatusBadRequest)
 		return
 	}
 
@@ -46,7 +46,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	isValidPassword, err := database.CheckUserPassword(inputData.Username, inputData.Password)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Database error", http.StatusInternalServerError)
+		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
 

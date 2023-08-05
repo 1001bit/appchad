@@ -44,7 +44,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 	LoadTemplate("templates/blogchad/article.html", article, w)
 }
 
-// blogchad main
+// blogchad wall
 func Blogchad(w http.ResponseWriter, r *http.Request) {
 	data := PageLoadData{}
 	cookieUsername, err := r.Cookie("username")

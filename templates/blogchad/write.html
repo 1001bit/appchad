@@ -10,7 +10,7 @@
     <form method="POST" action="/api/blogchad" enctype="multipart/form-data">
         <div>
             <label for="title">Article title:</label>
-            <input type="text" name="title" id="title" style="font-size: large; width: 500px;" required>
+            <input type="text" name="title" id="title" maxlength="255" style="font-size: large; width: 500px;" required>
         </div>
         <br>
         <div>
@@ -20,7 +20,7 @@
         <br>
         <div>
             <label for="text">Text:</label>
-            <textarea type="text" name="text" id="text" rows="20" cols="100" style="font-size: x-large; background-color:aliceblue; width: 95%;" required></textarea>
+            <textarea type="text" name="text" id="text" maxlength="65535" rows="20" cols="100" style="font-size: x-large; background-color:aliceblue; width: 95%;" required></textarea>
         </div>
         <br>
 
