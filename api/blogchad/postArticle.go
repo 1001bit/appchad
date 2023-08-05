@@ -27,9 +27,14 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 	newArticle := Article{}
 	newArticle.Title = r.PostFormValue("title")
 	newArticle.Text = r.PostFormValue("text")
-	newArticle.User = cookieUsername.Value
-	newArticle.Image, err = imageUpload(r)
+	if newArticle.Title == "" || newArticle.Text == "" {
+		http.Error(w, "empty title or text", http.StatusBadRequest)
+		return
+	}
 
+	newArticle.User = cookieUsername.Value
+
+	newArticle.Image, err = imageUpload(r)
 	if err != nil {
 		log.Println("error uploading a file:", err)
 		newArticle.Image = ""

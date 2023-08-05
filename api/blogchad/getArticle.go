@@ -1,6 +1,8 @@
 package blogchad
 
-import "github.com/McCooll75/appchad/database"
+import (
+	"github.com/McCooll75/appchad/database"
+)
 
 type Article struct {
 	Id    string `json:"id"`
@@ -17,5 +19,6 @@ func GetArticle(id int) (Article, error) {
 	if err != nil {
 		return Article{}, err
 	}
+
 	return article, nil
 }

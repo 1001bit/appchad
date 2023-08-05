@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"html"
 	"log"
 	"net/http"
 
@@ -26,8 +27,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var inputData Input
 	err := json.NewDecoder(r.Body).Decode(&inputData)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "Failed to parse json", http.StatusBadRequest)
+		log.Println("failed to decode json:", err)
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	if inputData.Username != html.EscapeString(inputData.Username) {
+		http.Error(w, "username must not contain special characters!", http.StatusBadRequest)
 		return
 	}
 

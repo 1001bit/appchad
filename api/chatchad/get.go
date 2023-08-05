@@ -3,6 +3,7 @@ package chatchad
 import (
 	"database/sql"
 	"encoding/json"
+	"html"
 	"log"
 	"net/http"
 
@@ -39,6 +40,7 @@ func ChatGet(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		message := Message{}
 		rows.Scan(&message.Id, &message.User, &message.Text, &message.Date)
+		message.Text = html.EscapeString(message.Text)
 		messages = append(messages, message)
 	}
 

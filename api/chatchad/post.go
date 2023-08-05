@@ -43,6 +43,11 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	if requestData.Text == "" {
+		http.Error(w, "empty message", http.StatusBadRequest)
+		return
+	}
+
 	// post message to the database
 	_, err = database.Statements["ChatPost"].Exec(requestData.Username, requestData.Text)
 	if err != nil {

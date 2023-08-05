@@ -60,20 +60,21 @@
     background-image var(--timing) ease;
 }
 
-*,
+/* *,
 *:before,
 *:after {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   outline: calc(var(--debug) * 1px) dotted hsl(calc(var(--debug) * 10 * 1deg), 60%, 60%);
-}
+} */
 
 /*  */
 
 body {
-  background: var(--context-bg);
-  font-family: "Inter", sans-serif;
+  /* background: var(--context-bg); */
+  /* font-family: "Inter", sans-serif; */
+  overflow-y: hidden;
 }
 
 pre {
@@ -88,9 +89,11 @@ pre {
 }
 
 #chat {
-  height: 50%;
-  max-width: 1080px;
-  height: 550px;
+  max-width: 70%;
+  min-width: 200px;
+
+  max-height: 55vh;
+  min-height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
   word-break: break-all;

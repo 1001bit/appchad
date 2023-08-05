@@ -1,0 +1,8 @@
+body {
+    overflow-x: hidden;
+}
+
+.article {
+    word-wrap: break-word;
+    font-size: x-large;
+}

@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"html"
 	"log"
 	"net/http"
 
@@ -24,6 +25,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Failed to parse json", http.StatusBadRequest)
+		return
+	}
+
+	if inputData.Username != html.EscapeString(inputData.Username) {
+		http.Error(w, "username must not contain special characters!", http.StatusBadRequest)
 		return
 	}
 
