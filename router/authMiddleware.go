@@ -8,6 +8,8 @@ import (
 	"github.com/McCooll75/appchad/database"
 )
 
+const cacheHold = time.Minute * 10
+
 type User struct {
 	username string
 	token    string
@@ -69,7 +71,7 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	// valid token
-	expiry := time.Now().Add(time.Minute * 30)
+	expiry := time.Now().Add(cacheHold)
 	sessions = append(sessions, Session{user: currentUser, expiry: expiry})
 	return true
 }
