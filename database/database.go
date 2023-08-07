@@ -40,9 +40,9 @@ func UserExists(username string) (bool, error) {
 }
 
 // is token correct for username
-func CheckUserToken(username, token string) (bool, error) {
+func CheckUserToken(userId, token string) (bool, error) {
 	var dbToken string
-	err := Statements["TokenCorrect"].QueryRow(username).Scan(&dbToken)
+	err := Statements["TokenCorrect"].QueryRow(userId).Scan(&dbToken)
 	if err == sql.ErrNoRows {
 		return false, nil
 	}
@@ -51,12 +51,12 @@ func CheckUserToken(username, token string) (bool, error) {
 }
 
 // is password correct for username
-func CheckUserPassword(username, password string) (bool, error) {
+func CheckUserPasswordGetId(username, password string) (int, error) {
 	var dbPassword string
-	err := Statements["PasswordCorrect"].QueryRow(username).Scan(&dbPassword)
-	if err == sql.ErrNoRows {
-		return false, nil
+	var id int
+	err := Statements["PasswordCorrect"].QueryRow(username).Scan(&dbPassword, &id)
+	if err == sql.ErrNoRows || !crypt.CheckHash(password, dbPassword) {
+		return 0, nil
 	}
-	valid := crypt.CheckHash(password, dbPassword)
-	return valid, err
+	return id, err
 }

@@ -43,17 +43,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// is password valid
-	isValidPassword, err := database.CheckUserPassword(inputData.Username, inputData.Password)
+	id, err := database.CheckUserPasswordGetId(inputData.Username, inputData.Password)
 	if err != nil {
-		log.Println(err)
+		log.Println("error checking password:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
 
-	if !isValidPassword {
+	if id == 0 {
 		http.Error(w, "incorrect password or username", http.StatusBadRequest)
 		return
 	}
 
-	success(w, r, inputData.Username)
+	success(w, r, id, inputData.Username)
 }

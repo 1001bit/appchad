@@ -3,13 +3,14 @@ package auth
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/McCooll75/appchad/crypt"
 	"github.com/McCooll75/appchad/database"
 )
 
 // if login or register was successful
-func success(w http.ResponseWriter, r *http.Request, username string) {
+func success(w http.ResponseWriter, r *http.Request, userId int, username string) {
 	// Generate token
 	token, err := crypt.RandomHex(32)
 	if err != nil {
@@ -25,7 +26,7 @@ func success(w http.ResponseWriter, r *http.Request, username string) {
 		return
 	}
 
-	_, err = database.Statements["InsertToken"].Exec(hashToken, username)
+	_, err = database.Statements["InsertToken"].Exec(hashToken, userId)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		log.Println(err)
@@ -39,6 +40,12 @@ func success(w http.ResponseWriter, r *http.Request, username string) {
 		Path:   "/",
 		MaxAge: 60 * 60 * 24 * 365,
 	}
+	userIdCookie := &http.Cookie{
+		Name:   "userId",
+		Value:  strconv.Itoa(userId),
+		Path:   "/",
+		MaxAge: 60 * 60 * 24 * 365,
+	}
 	usernameCookie := &http.Cookie{
 		Name:   "username",
 		Value:  username,
@@ -46,6 +53,7 @@ func success(w http.ResponseWriter, r *http.Request, username string) {
 		MaxAge: 60 * 60 * 24 * 365,
 	}
 	http.SetCookie(w, tokenCookie)
+	http.SetCookie(w, userIdCookie)
 	http.SetCookie(w, usernameCookie)
 
 	w.Write([]byte("success"))

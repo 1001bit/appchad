@@ -24,6 +24,10 @@ header {
     text-decoration: none;
 }
 
+.profile {
+    margin-left: auto;
+}
+
 .header-group {
     background-color: rgb(236, 248, 237);
     height: 100%;

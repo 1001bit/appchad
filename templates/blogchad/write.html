@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>write | blogchad</title>
+    <link rel="stylesheet" href="/assets/blogchad/styleWrite.css">
 </head>
 <body>
     <h2>Write here:</h2>
     <form method="POST" action="/api/blogchad" enctype="multipart/form-data">
         <div>
             <label for="title">Article title:</label>
-            <input type="text" name="title" id="title" maxlength="255" style="font-size: large; width: 500px;" required>
+            <input type="text" name="title" id="title" maxlength="255" required>
         </div>
         <br>
         <div>
             <label for="image">Image:</label>
-            <input type="file" name="image" id="image" style="font-size: large;">
+            <input type="file" name="image" id="image">
         </div>
         <br>
         <div>
             <label for="text">Text:</label>
-            <textarea type="text" name="text" id="text" maxlength="65535" rows="20" cols="100" style="font-size: x-large; background-color:aliceblue; width: 95%;" required></textarea>
+            <textarea type="text" name="text" id="text" maxlength="65535" rows="20" required></textarea>
         </div>
         <br>
 

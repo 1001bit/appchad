@@ -11,8 +11,8 @@ import (
 const cacheHold = time.Minute * 10
 
 type User struct {
-	username string
-	token    string
+	id    string
+	token string
 }
 
 type Session struct {
@@ -25,12 +25,12 @@ var sessions []Session
 // is requesting user logged in
 func isLogged(w http.ResponseWriter, r *http.Request) bool {
 	tokenCookie, err1 := r.Cookie("token")
-	usernameCookie, err2 := r.Cookie("username")
+	userIdCookie, err2 := r.Cookie("userId")
 
 	// error
 	if err1 != nil && err2 != nil && (err1 != http.ErrNoCookie || err2 != http.ErrNoCookie) {
 		http.Error(w, "server error", http.StatusInternalServerError)
-		log.Fatal(err1, err2)
+		log.Fatal("error getting cookies:", err1, err2)
 	}
 
 	// no cookies
@@ -38,10 +38,11 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	username, token := usernameCookie.Value, tokenCookie.Value
+	token := tokenCookie.Value
+	userId := userIdCookie.Value
 
 	// if user in cache
-	currentUser := User{username: username, token: token}
+	currentUser := User{id: userId, token: token}
 	for i, s := range sessions {
 		// if token is expired
 		if s.expiry.Before(time.Now()) {
@@ -57,12 +58,12 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 
 	// if not found in cache
 	// check in database for correctness
-	isValidToken, err := database.CheckUserToken(username, token)
+	isValidToken, err := database.CheckUserToken(userId, token)
 
 	// error
 	if err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Fatal("error validating token:", err)
 	}
 
 	// invalid token

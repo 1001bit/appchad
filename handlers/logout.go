@@ -9,7 +9,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		MaxAge: -1,
 	}
 	usernameCookie := &http.Cookie{
-		Name:   "username",
+		Name:   "userId",
 		Value:  "",
 		MaxAge: -1,
 	}

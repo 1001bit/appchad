@@ -63,12 +63,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add user to the database
-	_, err = database.Statements["Register"].Exec(inputData.Username, hash)
+	res, err := database.Statements["Register"].Exec(inputData.Username, hash)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
 	}
 
-	success(w, r, inputData.Username)
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Server error", http.StatusInternalServerError)
+		return
+	}
+
+	success(w, r, int(id), inputData.Username)
 }

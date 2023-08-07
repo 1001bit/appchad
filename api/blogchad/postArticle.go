@@ -8,6 +8,14 @@ import (
 	"github.com/McCooll75/appchad/database"
 )
 
+type NewArticle struct {
+	Title  string
+	UserId string
+	Text   string
+	Image  string
+	Id     string
+}
+
 func PostArticle(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		log.Println("error parsing form:", err)
@@ -15,7 +23,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookieUsername, err := r.Cookie("username")
+	cookieUserId, err := r.Cookie("userId")
 	// error
 	if err != nil {
 		log.Println(err)
@@ -24,7 +32,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get data
-	newArticle := Article{}
+	newArticle := NewArticle{}
 	newArticle.Title = r.PostFormValue("title")
 	newArticle.Text = r.PostFormValue("text")
 	if newArticle.Title == "" || newArticle.Text == "" {
@@ -32,7 +40,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newArticle.User = cookieUsername.Value
+	newArticle.UserId = cookieUserId.Value
 
 	newArticle.Image, err = imageUpload(r)
 	if err != nil {
@@ -40,7 +48,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		newArticle.Image = ""
 	}
 
-	result, err := database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.User, newArticle.Text, newArticle.Image)
+	result, err := database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserId, newArticle.Text, newArticle.Image)
 	if err != nil {
 		log.Println("error posting to blog:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
