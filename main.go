@@ -54,5 +54,5 @@ func main() {
 		http.ServeFile(w, r, "./assets/favicon.ico")
 	})
 
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal("error listening:", http.ListenAndServe(":8000", r))
 }
