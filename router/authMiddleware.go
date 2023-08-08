@@ -10,14 +10,10 @@ import (
 
 const cacheHold = time.Minute * 10
 
-type User struct {
-	id    string
-	token string
-}
-
 type Session struct {
-	user   User
-	expiry time.Time
+	UserID string
+	Token  string
+	Expiry time.Time
 }
 
 var sessions []Session
@@ -25,7 +21,7 @@ var sessions []Session
 // is requesting user logged in
 func isLogged(w http.ResponseWriter, r *http.Request) bool {
 	tokenCookie, err1 := r.Cookie("token")
-	userIdCookie, err2 := r.Cookie("userId")
+	userIDCookie, err2 := r.Cookie("userID")
 
 	// error
 	if err1 != nil && err2 != nil && (err1 != http.ErrNoCookie || err2 != http.ErrNoCookie) {
@@ -39,26 +35,24 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	token := tokenCookie.Value
-	userId := userIdCookie.Value
+	userID := userIDCookie.Value
 
-	// if user in cache
-	currentUser := User{id: userId, token: token}
 	for i, s := range sessions {
 		// if token is expired
-		if s.expiry.Before(time.Now()) {
+		if s.Expiry.Before(time.Now()) {
 			sessions[i] = sessions[len(sessions)-1]
 			sessions = sessions[:len(sessions)-1]
 			continue
 		}
 		// if token is correct
-		if s.user == currentUser {
+		if s.UserID == userID {
 			return true
 		}
 	}
 
 	// if not found in cache
 	// check in database for correctness
-	isValidToken, err := database.CheckUserToken(userId, token)
+	isValidToken, err := database.CheckUserToken(userID, token)
 
 	// error
 	if err != nil {
@@ -73,7 +67,7 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 
 	// valid token
 	expiry := time.Now().Add(cacheHold)
-	sessions = append(sessions, Session{user: currentUser, expiry: expiry})
+	sessions = append(sessions, Session{UserID: userID, Token: token, Expiry: expiry})
 	return true
 }
 

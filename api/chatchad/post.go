@@ -10,7 +10,7 @@ import (
 
 type RequestData struct {
 	Text   string `json:"text"`
-	UserId string
+	UserID string
 }
 
 // POST - post a message
@@ -23,8 +23,8 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 	requestData := RequestData{}
 
 	// get username from request
-	cookieUserId, err := r.Cookie("userId")
-	requestData.UserId = cookieUserId.Value
+	cookieUserID, err := r.Cookie("userID")
+	requestData.UserID = cookieUserID.Value
 
 	// error
 	if err != nil {
@@ -49,7 +49,7 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// post message to the database
-	_, err = database.Statements["ChatPost"].Exec(requestData.UserId, requestData.Text)
+	_, err = database.Statements["ChatPost"].Exec(requestData.UserID, requestData.Text)
 	if err != nil {
 		log.Println("error executing statement:", err)
 		http.Error(w, "Failed to post message", http.StatusInternalServerError)

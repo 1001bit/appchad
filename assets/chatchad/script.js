@@ -1,18 +1,18 @@
 const updateTime = 3000;
 let interval = window.setInterval(chatGet, updateTime);
-let lastMessageId = 0
+let lastMessageID = 0
 
 $(document).ready(chatGet)
 
 // fetch api and add messages to page
 function chatGet(){
-    return fetch(`api/chatchad?id=${lastMessageId}`, {
+    return fetch(`api/chatchad?id=${lastMessageID}`, {
         method: "GET"
     })
     .then(response => response.json())
     .then(data => {
         if (data.length > 0){
-            lastMessageId = data[data.length - 1].id;
+            lastMessageID = data[data.length - 1].id;
             addNewMessages(data)
         }
     })

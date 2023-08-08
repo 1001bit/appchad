@@ -10,10 +10,10 @@ import (
 
 type NewArticle struct {
 	Title  string
-	UserId string
+	UserID string
 	Text   string
 	Image  string
-	Id     string
+	ID     string
 }
 
 func PostArticle(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookieUserId, err := r.Cookie("userId")
+	cookieUserID, err := r.Cookie("userID")
 	// error
 	if err != nil {
 		log.Println(err)
@@ -40,7 +40,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newArticle.UserId = cookieUserId.Value
+	newArticle.UserID = cookieUserID.Value
 
 	newArticle.Image, err = imageUpload(r)
 	if err != nil {
@@ -48,7 +48,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		newArticle.Image = ""
 	}
 
-	result, err := database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserId, newArticle.Text, newArticle.Image)
+	result, err := database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserID, newArticle.Text, newArticle.Image)
 	if err != nil {
 		log.Println("error posting to blog:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
@@ -61,7 +61,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
-	newArticle.Id = strconv.Itoa(int(id))
+	newArticle.ID = strconv.Itoa(int(id))
 
 	if err != nil {
 		log.Println("error posting an article:", err)
@@ -69,7 +69,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/blogchad/article/"+newArticle.Id, http.StatusSeeOther)
+	http.Redirect(w, r, "/blogchad/article/"+newArticle.ID, http.StatusSeeOther)
 
 	if newArticle.Image != "" {
 		newArticle.Image = "/assets/files/" + newArticle.Image

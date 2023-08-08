@@ -26,7 +26,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
-		http.Error(w, "incorrect id", http.StatusBadRequest)
+		http.Error(w, "no such article!", http.StatusNotFound)
 		return
 	}
 

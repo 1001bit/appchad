@@ -5,7 +5,7 @@ import (
 )
 
 type Article struct {
-	Id    string `json:"id"`
+	ID    string `json:"id"`
 	Title string `json:"title"`
 	Date  string `json:"date"`
 	User  string `json:"user"`
@@ -15,7 +15,7 @@ type Article struct {
 
 func GetArticle(id int) (Article, error) {
 	var article Article
-	err := database.Statements["BlogArticleGet"].QueryRow(id).Scan(&article.Id, &article.Title, &article.Date, &article.User, &article.Text, &article.Image)
+	err := database.Statements["BlogArticleGet"].QueryRow(id).Scan(&article.ID, &article.Title, &article.Date, &article.User, &article.Text, &article.Image)
 	if err != nil {
 		return Article{}, err
 	}

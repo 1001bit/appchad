@@ -10,7 +10,7 @@ import (
 )
 
 // if login or register was successful
-func success(w http.ResponseWriter, r *http.Request, userId int, username string) {
+func success(w http.ResponseWriter, r *http.Request, userID int, username string) {
 	// Generate token
 	token, err := crypt.RandomHex(32)
 	if err != nil {
@@ -26,7 +26,7 @@ func success(w http.ResponseWriter, r *http.Request, userId int, username string
 		return
 	}
 
-	_, err = database.Statements["InsertToken"].Exec(hashToken, userId)
+	_, err = database.Statements["InsertToken"].Exec(hashToken, userID)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		log.Println(err)
@@ -40,9 +40,9 @@ func success(w http.ResponseWriter, r *http.Request, userId int, username string
 		Path:   "/",
 		MaxAge: 60 * 60 * 24 * 365,
 	}
-	userIdCookie := &http.Cookie{
-		Name:   "userId",
-		Value:  strconv.Itoa(userId),
+	userIDCookie := &http.Cookie{
+		Name:   "userID",
+		Value:  strconv.Itoa(userID),
 		Path:   "/",
 		MaxAge: 60 * 60 * 24 * 365,
 	}
@@ -53,7 +53,7 @@ func success(w http.ResponseWriter, r *http.Request, userId int, username string
 		MaxAge: 60 * 60 * 24 * 365,
 	}
 	http.SetCookie(w, tokenCookie)
-	http.SetCookie(w, userIdCookie)
+	http.SetCookie(w, userIDCookie)
 	http.SetCookie(w, usernameCookie)
 
 	w.Write([]byte("success"))
