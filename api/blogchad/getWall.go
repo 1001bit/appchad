@@ -19,7 +19,7 @@ func GetWall() ([]byte, error) {
 	// rows to a messages structure
 	for rows.Next() {
 		article := Article{}
-		rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username, &article.Text, &article.Image)
+		rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username, &article.Image)
 		// shorten title
 		if len(article.Title) > 64 {
 			article.Title = article.Title[:64] + "..."

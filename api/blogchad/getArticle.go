@@ -5,13 +5,13 @@ import (
 )
 
 type Article struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	Date     string `json:"date"`
-	Username string `json:"username"`
-	UserID   string `json:"userid"`
-	Text     string `json:"text"`
-	Image    string `json:"image"`
+	ID       string
+	Title    string
+	Date     string
+	Username string
+	UserID   string
+	Text     string
+	Image    string
 }
 
 func GetArticle(id int) (Article, error) {

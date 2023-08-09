@@ -7,10 +7,16 @@ import (
 
 var Statements = make(map[string]*sql.Stmt)
 
-func initStatements() {
-	var errs [11]error
+func prepareStatement(name, statement string) {
+	var err error
+	Statements[name], err = Database.Prepare(statement)
+	log.Println(name, "statement error:", err)
+}
 
-	Statements["ChatGet"], errs[0] = Database.Prepare(`
+func initStatements() {
+	// chatchad
+	// get chat
+	prepareStatement("ChatGet", `
 		SELECT chat.id, u.username, chat.user_id, chat.text, chat.date
 		FROM chat
 		JOIN users u 
@@ -18,30 +24,37 @@ func initStatements() {
 		WHERE chat.id>?
 		ORDER BY chat.id;
 	`)
-	Statements["ChatPost"], errs[1] = Database.Prepare("INSERT INTO chat (user_id, text) VALUES (?, ?)")
+	// post to chat
+	prepareStatement("ChatPost", "INSERT INTO chat (user_id, text) VALUES (?, ?)")
 
-	Statements["BlogWallGet"], errs[2] = Database.Prepare(`
-		SELECT blog.id, blog.title, blog.date, u.username, blog.text, blog.image
+	// blogchad
+	// get wall
+	prepareStatement("BlogWallGet", `
+		SELECT blog.id, blog.title, blog.date, u.username, blog.image
 		FROM blog
 		JOIN users u
 		ON blog.user_id = u.id;
 	`)
-	Statements["BlogArticleGet"], errs[3] = Database.Prepare(`
+	// get user wall
+	prepareStatement("UserWallGet", "SELECT blog.id, blog.title, blog.date, blog.image WHERE blog.user_id = ?")
+	// get article
+	prepareStatement("BlogArticleGet", `
 		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text, blog.image
 		FROM blog
 		JOIN users u
 		ON blog.user_id = u.id
 		WHERE blog.id = ?;
 	`)
-	Statements["BlogPost"], errs[4] = Database.Prepare("INSERT INTO blog (title, user_id, text, image) VALUES (?, ?, ?, ?)")
+	// post article
+	prepareStatement("BlogPost", "INSERT INTO blog (title, user_id, text, image) VALUES (?, ?, ?, ?)")
 
-	Statements["Register"], errs[5] = Database.Prepare("INSERT INTO users (username, hash) VALUES (?, ?)")
-	Statements["InsertToken"], errs[6] = Database.Prepare("UPDATE users SET token = ? WHERE id = ?")
-	Statements["UserExists"], errs[7] = Database.Prepare("SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)")
-	Statements["TokenCorrect"], errs[8] = Database.Prepare("SELECT token FROM users WHERE id = ?")
-	Statements["PasswordCorrect"], errs[9] = Database.Prepare("SELECT hash, id FROM users WHERE username = ?")
+	// auth
+	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")
+	prepareStatement("InsertToken", "UPDATE users SET token = ? WHERE id = ?")
+	prepareStatement("UserExists", "SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)")
+	prepareStatement("TokenCorrect", "SELECT token FROM users WHERE id = ?")
+	prepareStatement("PasswordCorrect", "SELECT hash, id FROM users WHERE username = ?")
 
-	Statements["UserGet"], errs[10] = Database.Prepare("SELECT username, reg_date FROM users WHERE id = ?")
-
-	log.Println("statement errors:", errs)
+	// user page
+	prepareStatement("UserGet", "SELECT username, reg_date, description FROM users WHERE id = ?")
 }
