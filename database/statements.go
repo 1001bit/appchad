@@ -11,7 +11,7 @@ func initStatements() {
 	var errs [11]error
 
 	Statements["ChatGet"], errs[0] = Database.Prepare(`
-		SELECT chat.id, u.username, chat.text, chat.date
+		SELECT chat.id, u.username, chat.user_id, chat.text, chat.date
 		FROM chat
 		JOIN users u 
 		ON chat.user_id = u.id
@@ -27,7 +27,7 @@ func initStatements() {
 		ON blog.user_id = u.id;
 	`)
 	Statements["BlogArticleGet"], errs[3] = Database.Prepare(`
-		SELECT blog.id, blog.title, blog.date, u.username, blog.text, blog.image
+		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text, blog.image
 		FROM blog
 		JOIN users u
 		ON blog.user_id = u.id

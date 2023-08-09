@@ -9,7 +9,8 @@
 <body>
     <div class="article">
         <p>{{ .Date }}</p>
-        <h2>{{ .User }}: {{ .Title }}</h2>
+        <a href="/chad/{{ .UserID }}"><h3>{{ .Username }}:</h3></a>
+        <h2>{{ .Title }}</h2>
         <img src="{{ .Image }}" alt="no image">
         <p>Text:</p>
         <pre>{{ .Text }}</pre>

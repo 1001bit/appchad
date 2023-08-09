@@ -42,8 +42,10 @@ function addNewMessages(data){
     for(let i = 0; i < data.length; i++){
         let message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
         let date = $("<pre></pre>").text(data[i]['date']);
-        let text = $("<pre></pre>").html(`${data[i]['user']}: ${data[i]['text']}`);
+        let user = $("<a></a>").text(`${data[i]['username']}:`).attr("href", "/chad/"+data[i]["userid"]);
+        let text = $("<pre></pre>").html(data[i]['text'])
         message.append(date);
+        message.append(user)
         message.append(text);
         fragment.append(message[0]);
     }
