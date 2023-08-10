@@ -8,11 +8,13 @@ import (
 
 	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/users"
+	"github.com/McCooll75/appchad/misc"
 	"github.com/go-chi/chi/v5"
 )
 
 type ProfileData struct {
 	User     users.User
+	IsUser   bool
 	Articles []blogchad.Article
 }
 
@@ -44,6 +46,8 @@ func Chad(w http.ResponseWriter, r *http.Request) {
 		log.Println("error unmarshaling user wall:", err)
 		return
 	}
+
+	data.IsUser = (misc.GetCookie("username", w, r) == data.User.Username)
 
 	LoadTemplate("templates/chad.html", data, w)
 }

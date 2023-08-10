@@ -3,6 +3,7 @@
     background-color: antiquewhite;
     overflow-y: scroll;
     border-radius: 10px;
+    width: 90%;
 }
 
 .article {
@@ -17,4 +18,31 @@
     border-radius: 6px;
     background-color: rgb(214, 214, 214);
     width: fit-content;
+}
+
+#edit-btn {
+    font-size: x-large;
+}
+
+.descriptiom {
+    font-size: x-large;
+}
+
+.desc-back {
+    background-color:rgb(215, 226, 215);
+    border-radius: 6px;
+    padding: 5px;
+    padding-inline: 20px;
+    margin-block: 5px;
+}
+
+.logout {
+    display: flex;
+    margin-top: 30px;
+    width: fit-content;
+    font-size: x-large;
+    background-color:rgb(0, 0, 0);
+    color: white;
+    padding: 4px;
+    border-radius: 6px;
 }

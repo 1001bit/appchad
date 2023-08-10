@@ -10,21 +10,25 @@
 <body>
     <h2>{{ .User.Username }}'s profile</h2>
     <h3>Member since {{ .User.Date }}</h2>
-    <h4>description:</h4>
-    <p>{{ .User.Desc }}</p>
-
+    <div class="desc-back">
+        <h3>description:</h3>
+        <p class="descriptiom">{{ .User.Desc }}</p>
+    </div>
+    
+    {{ if .IsUser }}
     <button id="edit-btn">Edit</button>
     <form id="edit-form" action="/api/chad/edit" method="post">
         <label for="new-username">new username:</label>
-        <input type="text" id="new-username" name="username" value="{{ .User.Username }}">
+        <input type="text" id="new-username" name="username" maxlength="31" value="{{ .User.Username }}">
         <br>
         <label for="new-description">new description:</label>
-        <textarea id="new-description" name="description">{{ .User.Desc }}</textarea>
+        <textarea id="new-description" name="description" maxlength="255">{{ .User.Desc }}</textarea>
         <br><br>
         <input type="submit" value="submit">
     </form>
+    {{ end }}
 
-    <h3>{{ .User.Username }}'s blogchad articles:</h3>
+    <h2>{{ .User.Username }}'s blogchad articles:</h2>
     <div class="wall">
         {{ range .Articles }}
 
@@ -38,6 +42,12 @@
 
         {{ end }}
     </div>
+
+    {{ if .IsUser }}
+    <div class="logout-outer">
+        <a href="/logout" class="logout">logout</a>
+    </div>
+    {{ end}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="/assets/chad/script.js"></script>

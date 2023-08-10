@@ -57,4 +57,5 @@ func initStatements() {
 
 	// user page
 	prepareStatement("UserGet", "SELECT username, reg_date, description FROM users WHERE id = ?")
+	prepareStatement("UserEdit", "UPDATE users SET description = ?, username = ? WHERE id = ?")
 }
