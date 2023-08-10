@@ -1,16 +1,15 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/McCooll75/appchad/misc"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	cookieUsername, err := r.Cookie("username")
-	username := cookieUsername.Value
+	username := misc.GetCookie("username", w, r)
 	// error
-	if err != nil {
-		log.Println("error getting username cookie:", err)
+	if username == "" {
 		http.Error(w, "no cookie", http.StatusBadRequest)
 		return
 	}

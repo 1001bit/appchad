@@ -4,6 +4,7 @@ import (
 	"github.com/McCooll75/appchad/api/auth"
 	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/chatchad"
+	"github.com/McCooll75/appchad/api/users"
 	"github.com/McCooll75/appchad/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -37,6 +38,7 @@ func RouterSetup() *chi.Mux {
 		r.Post("/api/chatchad", chatchad.ChatPost)
 		r.Get("/api/chatchad", chatchad.ChatGet)
 		r.Post("/api/blogchad", blogchad.PostArticle)
+		r.Post("/api/chad/edit", users.EditUser)
 
 		r.Get("/logout", handlers.Logout)
 

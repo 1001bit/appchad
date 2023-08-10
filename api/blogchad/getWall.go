@@ -1,25 +1,42 @@
 package blogchad
 
 import (
+	"database/sql"
 	"encoding/json"
 
 	"github.com/McCooll75/appchad/database"
 )
 
-func GetWall() ([]byte, error) {
+// get global wall
+func GetWall(userID string) ([]byte, error) {
 	// get rows of messages
-	rows, err := database.Statements["BlogWallGet"].Query()
-	if err != nil {
-		return []byte(""), err
+	var rows *sql.Rows
+	var err error
+
+	if userID == "" {
+		rows, err = database.Statements["BlogWallGet"].Query()
+		if err != nil {
+			return []byte(""), err
+		}
+		defer rows.Close()
+	} else {
+		rows, err = database.Statements["UserWallGet"].Query(userID)
+		if err != nil {
+			return []byte(""), err
+		}
+		defer rows.Close()
 	}
-	defer rows.Close()
 
 	articles := []Article{}
 
 	// rows to a messages structure
 	for rows.Next() {
 		article := Article{}
-		rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username, &article.Image)
+		if userID == "" {
+			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username, &article.Image)
+		} else {
+			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Image)
+		}
 		// shorten title
 		if len(article.Title) > 64 {
 			article.Title = article.Title[:64] + "..."

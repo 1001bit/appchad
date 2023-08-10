@@ -1,8 +1,13 @@
 const updateTime = 3000;
 let interval = window.setInterval(chatGet, updateTime);
 let lastMessageID = 0
+const chatBox = $("#chat");
 
-$(document).ready(chatGet)
+$(document).ready(() => {
+    chatGet().then(() => {
+        chatBox.scrollTop(chatBox[0].scrollHeight);
+    })
+})
 
 // fetch api and add messages to page
 function chatGet(){
@@ -35,8 +40,7 @@ async function chatPost(msgText){
 
 // add messages to page from data
 function addNewMessages(data){
-    const chatBox = $("#chat");
-    const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight;
+    const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight-1;
     const fragment = document.createDocumentFragment()
 
     for(let i = 0; i < data.length; i++){

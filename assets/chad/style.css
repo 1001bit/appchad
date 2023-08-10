@@ -1,0 +1,20 @@
+.wall {
+    max-height: calc(100vh - 320px);
+    background-color: antiquewhite;
+    overflow-y: scroll;
+    border-radius: 10px;
+}
+
+.article {
+    min-height: 300px;
+}
+
+#edit-form {
+    display: none;
+    box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
+    margin-block: 10px;
+    padding: 5px;
+    border-radius: 6px;
+    background-color: rgb(214, 214, 214);
+    width: fit-content;
+}

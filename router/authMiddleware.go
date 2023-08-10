@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/McCooll75/appchad/database"
+	"github.com/McCooll75/appchad/misc"
 )
 
 const cacheHold = time.Minute * 10
@@ -20,23 +21,14 @@ var sessions []Session
 
 // is requesting user logged in
 func isLogged(w http.ResponseWriter, r *http.Request) bool {
-	tokenCookie, err1 := r.Cookie("token")
-	userIDCookie, err2 := r.Cookie("userID")
+	token := misc.GetCookie("token", w, r)
+	userID := misc.GetCookie("userID", w, r)
 
-	// error
-	if err1 != nil && err2 != nil && (err1 != http.ErrNoCookie || err2 != http.ErrNoCookie) {
-		http.Error(w, "server error", http.StatusInternalServerError)
-		log.Fatal("error getting cookies:", err1, err2)
-	}
-
-	// no cookies
-	if err1 == http.ErrNoCookie || err2 == http.ErrNoCookie {
+	if token == "" || userID == "" {
 		return false
 	}
 
-	token := tokenCookie.Value
-	userID := userIDCookie.Value
-
+	// check for expiry and is user in cahce
 	for i, s := range sessions {
 		// if token is expired
 		if s.Expiry.Before(time.Now()) {
@@ -44,8 +36,8 @@ func isLogged(w http.ResponseWriter, r *http.Request) bool {
 			sessions = sessions[:len(sessions)-1]
 			continue
 		}
-		// if token is correct
-		if s.UserID == userID {
+		// if user id, username, token is in cache
+		if s.UserID == userID && s.Token == token {
 			return true
 		}
 	}

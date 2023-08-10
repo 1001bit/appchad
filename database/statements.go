@@ -36,7 +36,7 @@ func initStatements() {
 		ON blog.user_id = u.id;
 	`)
 	// get user wall
-	prepareStatement("UserWallGet", "SELECT blog.id, blog.title, blog.date, blog.image WHERE blog.user_id = ?")
+	prepareStatement("UserWallGet", "SELECT id, title, date, image FROM blog WHERE user_id = ?")
 	// get article
 	prepareStatement("BlogArticleGet", `
 		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text, blog.image

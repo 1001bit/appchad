@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/McCooll75/appchad/misc"
 )
 
 type User struct {
@@ -14,21 +15,17 @@ func Header(w http.ResponseWriter, r *http.Request) {
 	user := User{}
 
 	// id
-	cookieUserID, err := r.Cookie("userID")
-	user.ID = cookieUserID.Value
+	user.ID = misc.GetCookie("userID", w, r)
 	// error
-	if err != nil {
-		log.Println(err)
+	if user.ID == "" {
 		http.Error(w, "no cookie", http.StatusBadRequest)
 		return
 	}
 
 	// name
-	cookieUsername, err := r.Cookie("username")
-	user.Name = cookieUsername.Value
+	user.Name = misc.GetCookie("username", w, r)
 	// error
-	if err != nil {
-		log.Println(err)
+	if user.Name == "" {
 		http.Error(w, "no cookie", http.StatusBadRequest)
 		return
 	}

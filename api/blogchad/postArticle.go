@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/McCooll75/appchad/database"
+	"github.com/McCooll75/appchad/misc"
 )
 
 type NewArticle struct {
@@ -17,13 +18,14 @@ type NewArticle struct {
 }
 
 func PostArticle(w http.ResponseWriter, r *http.Request) {
+	var err error
+
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		log.Println("error parsing form:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
 
-	cookieUserID, err := r.Cookie("userID")
 	// error
 	if err != nil {
 		log.Println(err)
@@ -33,14 +35,13 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 
 	// get data
 	newArticle := NewArticle{}
+	newArticle.UserID = misc.GetCookie("userID", w, r)
 	newArticle.Title = r.PostFormValue("title")
 	newArticle.Text = r.PostFormValue("text")
 	if newArticle.Title == "" || newArticle.Text == "" {
 		http.Error(w, "empty title or text", http.StatusBadRequest)
 		return
 	}
-
-	newArticle.UserID = cookieUserID.Value
 
 	newArticle.Image, err = imageUpload(r)
 	if err != nil {

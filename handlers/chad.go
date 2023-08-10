@@ -2,15 +2,25 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"log"
 	"net/http"
 
+	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/users"
 	"github.com/go-chi/chi/v5"
 )
 
+type ProfileData struct {
+	User     users.User
+	Articles []blogchad.Article
+}
+
 func Chad(w http.ResponseWriter, r *http.Request) {
-	user, err := users.GetUser(chi.URLParam(r, "id"))
+	var data ProfileData
+	var err error
+
+	data.User, err = users.GetUser(chi.URLParam(r, "id"))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "no such user", http.StatusNotFound)
@@ -21,5 +31,19 @@ func Chad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	LoadTemplate("templates/chad.html", user, w)
+	wallJson, err := blogchad.GetWall(chi.URLParam(r, "id"))
+	if err != nil && err != sql.ErrNoRows {
+		http.Error(w, "Server error", http.StatusInternalServerError)
+		log.Println("error getting wall:", err)
+		return
+	}
+
+	err = json.Unmarshal(wallJson, &data.Articles)
+	if err != nil && err != sql.ErrNoRows {
+		http.Error(w, "Server error", http.StatusInternalServerError)
+		log.Println("error unmarshaling user wall:", err)
+		return
+	}
+
+	LoadTemplate("templates/chad.html", data, w)
 }

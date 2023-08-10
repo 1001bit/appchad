@@ -3,12 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Username }} | chad</title>
+    <title>{{ .User.Username }} | chad</title>
+    <link rel="stylesheet" href="/assets/blogchad/style.css">
+    <link rel="stylesheet" href="/assets/chad/style.css">
 </head>
 <body>
-    <h2>{{ .Username }}'s profile</h2>
-    <h3>Member since {{ .Date }}</h2>
+    <h2>{{ .User.Username }}'s profile</h2>
+    <h3>Member since {{ .User.Date }}</h2>
     <h4>description:</h4>
-    <p>{{ .Desc }}</p>
+    <p>{{ .User.Desc }}</p>
+
+    <button id="edit-btn">Edit</button>
+    <form id="edit-form" action="/api/chad/edit" method="post">
+        <label for="new-username">new username:</label>
+        <input type="text" id="new-username" name="username" value="{{ .User.Username }}">
+        <br>
+        <label for="new-description">new description:</label>
+        <textarea id="new-description" name="description">{{ .User.Desc }}</textarea>
+        <br><br>
+        <input type="submit" value="submit">
+    </form>
+
+    <h3>{{ .User.Username }}'s blogchad articles:</h3>
+    <div class="wall">
+        {{ range .Articles }}
+
+        <a href="/blogchad/article/{{ .ID }}" class="article">
+            <div>
+                <h3 class="article-title">{{ .Title }}</h3>
+                <img class="article-image" src="{{ .Image }}" alt="no image">
+                <h4>Post date: {{ .Date }}</h4>
+            </div>
+        </a>
+
+        {{ end }}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="/assets/chad/script.js"></script>
 </body>
 </html>

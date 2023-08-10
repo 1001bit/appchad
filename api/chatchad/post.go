@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/McCooll75/appchad/database"
+	"github.com/McCooll75/appchad/misc"
 )
 
 type RequestData struct {
@@ -15,6 +16,7 @@ type RequestData struct {
 
 // POST - post a message
 func ChatPost(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if r.Method != http.MethodPost {
 		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
 		return
@@ -23,12 +25,10 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 	requestData := RequestData{}
 
 	// get username from request
-	cookieUserID, err := r.Cookie("userID")
-	requestData.UserID = cookieUserID.Value
+	requestData.UserID = misc.GetCookie("userID", w, r)
 
 	// error
-	if err != nil {
-		log.Println("error getting cookie:", err)
+	if requestData.UserID == "" {
 		http.Error(w, "no cookie", http.StatusBadRequest)
 		return
 	}

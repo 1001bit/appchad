@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/McCooll75/appchad/api/blogchad"
+	"github.com/McCooll75/appchad/misc"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -47,17 +48,15 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 // blogchad wall
 func Blogchad(w http.ResponseWriter, r *http.Request) {
 	data := PageLoadData{}
-	cookieUsername, err := r.Cookie("username")
-	data.Username = cookieUsername.Value
+	data.Username = misc.GetCookie("username", w, r)
 	// error
-	if err != nil {
-		log.Println(err)
+	if data.Username == "" {
 		http.Error(w, "no cookie", http.StatusBadRequest)
 		return
 	}
 
 	// get wall of articles
-	wall, err := blogchad.GetWall()
+	wall, err := blogchad.GetWall("")
 	if err != nil {
 		log.Println("error getting blog wall:", err)
 		http.Error(w, "database error", http.StatusInternalServerError)
