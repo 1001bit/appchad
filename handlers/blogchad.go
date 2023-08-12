@@ -19,11 +19,41 @@ type PageLoadData struct {
 
 // create article
 func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
-	LoadTemplate("templates/blogchad/write.html", "", w)
+	var article blogchad.Article
+	idForm := r.FormValue("id")
+	if idForm != "" {
+		id, err := strconv.Atoi(idForm)
+		if err != nil {
+			http.Error(w, "incorrect id", http.StatusBadRequest)
+			return
+		}
+		article, err = blogchad.GetArticle(id)
+		if err != nil {
+			if err != sql.ErrNoRows {
+				log.Println("error getting article:", err)
+				http.Error(w, "server error", http.StatusInternalServerError)
+				return
+			}
+			http.Error(w, "inorrect id", http.StatusNotFound)
+			return
+		}
+		if article.UserID != misc.GetCookie("userID", w, r) {
+			http.Error(w, "inorrect id", http.StatusNotFound)
+			return
+		}
+	}
+
+	LoadTemplate("templates/blogchad/write.html", article, w)
 }
 
 // see article
+type ArticlePageData struct {
+	Article blogchad.Article
+	UserID  string
+}
+
 func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
+	data := ArticlePageData{UserID: misc.GetCookie("userID", w, r)}
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
@@ -31,7 +61,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	article, err := blogchad.GetArticle(id)
+	data.Article, err = blogchad.GetArticle(id)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Println("error getting article:", err)
@@ -41,8 +71,8 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 not found!!", http.StatusNotFound)
 		return
 	}
-	log.Println(article.Image)
-	LoadTemplate("templates/blogchad/article.html", article, w)
+
+	LoadTemplate("templates/blogchad/article.html", data, w)
 }
 
 // blogchad wall

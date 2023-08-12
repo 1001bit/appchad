@@ -47,6 +47,8 @@ func initStatements() {
 	`)
 	// post article
 	prepareStatement("BlogPost", "INSERT INTO blog (title, user_id, text, image) VALUES (?, ?, ?, ?)")
+	// edit article
+	prepareStatement("BlogEdit", "UPDATE blog SET title = ?, text = ?, image = ? WHERE id = ?")
 
 	// auth
 	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")

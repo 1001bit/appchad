@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Title }} | blogchad</title>
+    <title>{{ .Article.Title }} | blogchad</title>
     <link rel="stylesheet" href="/assets/blogchad/styleArticle.css">
 </head>
 <body>
     <div class="article">
-        <p>{{ .Date }}</p>
-        <a href="/chad/{{ .UserID }}"><h3>{{ .Username }}:</h3></a>
+        <p>{{ .Article.Date }}</p>
+        <a href="/chad/{{ .Article.UserID }}"><h3>{{ .Article.Username }}:</h3></a>
         <div class="headers">
-            <h2>{{ .Title }}</h2>
-            <img src="{{ .Image }}" alt="no image">
+            <h2>{{ .Article.Title }}</h2>
+            <img src="{{ .Article.Image }}" alt="no image">
         </div>
         <div class="contents">
             <p>Text:</p>
-            <pre>{{ .Text }}</pre>
+            <pre>{{ .Article.Text }}</pre>
         </div>
     </div>
+    {{ if eq .UserID .Article.UserID }}
+    <a href="/blogchad/write?id={{ .Article.ID }}" class="edit">Edit</a>
+    {{ end }}
 </body>
 </html>
