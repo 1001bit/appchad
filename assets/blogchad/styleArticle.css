@@ -10,6 +10,7 @@ body {
 img {
     width: 20%;
     height: 20%;
+    margin-top: 10px;
 }
 
 pre {
@@ -18,15 +19,22 @@ pre {
 
 h2 {
     margin: 0;
-    padding-bottom: 10px;
 }
 
 .headers {
-    background-color: rgb(223, 228, 233);
+    background-color: rgb(223, 232, 233);
     padding: 10px;
     border-radius: 6px;
 }
 
 .edit {
     font-size: x-large;
+}
+
+.comment {
+    font-size: x-large;
+    background-color: rgb(223, 233, 223);
+    padding: 10px;
+    border-radius: 6px;
+    margin-block: 20px;
 }

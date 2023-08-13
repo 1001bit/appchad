@@ -22,5 +22,20 @@
     {{ if eq .UserID .Article.UserID }}
     <a href="/blogchad/write?id={{ .Article.ID }}" class="edit">Edit</a>
     {{ end }}
+    <h2>Comments (10):</h2>
+    <h3>write a comment:</h3>
+    <form method="POST" action="/api/blogchad/comment" id="comment-form">
+        <textarea name="text" rows="10" cols="40"></textarea>
+        <br>
+        <input type="submit" value="enter">
+        <input type="hidden" name="id" value="{{ .Article.ID }}">
+    </form>
+
+    </form>
+    <div class="comment" id="5">
+        <a href="#">bobie:</a>
+        <pre class="comment-text">hehe</pre>
+        <p>Date here</p>
+    </div>
 </body>
 </html>

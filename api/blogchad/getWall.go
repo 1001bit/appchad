@@ -15,17 +15,13 @@ func GetWall(userID string) ([]byte, error) {
 
 	if userID == "" {
 		rows, err = database.Statements["BlogWallGet"].Query()
-		if err != nil {
-			return []byte(""), err
-		}
-		defer rows.Close()
 	} else {
 		rows, err = database.Statements["UserWallGet"].Query(userID)
-		if err != nil {
-			return []byte(""), err
-		}
-		defer rows.Close()
 	}
+	if err != nil {
+		return []byte(""), err
+	}
+	defer rows.Close()
 
 	articles := []Article{}
 
