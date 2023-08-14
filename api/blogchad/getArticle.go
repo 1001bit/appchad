@@ -14,7 +14,7 @@ type Article struct {
 	Image    string
 }
 
-func GetArticle(id int) (Article, error) {
+func GetArticle(id string) (Article, error) {
 	var article Article
 	err := database.Statements["BlogArticleGet"].QueryRow(id).Scan(
 		&article.ID, &article.Title, &article.Date, &article.Username, &article.UserID, &article.Text, &article.Image,

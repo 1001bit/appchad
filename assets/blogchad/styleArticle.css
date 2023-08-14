@@ -27,8 +27,17 @@ h2 {
     border-radius: 6px;
 }
 
+.contents {
+    background-color: aliceblue;
+    padding: 6px;
+    border-radius: 6px;
+    margin-block: 20px;
+}
+
 .edit {
     font-size: x-large;
+    display: flex;
+    margin-bottom: 20px;
 }
 
 .comment {

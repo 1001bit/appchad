@@ -19,10 +19,12 @@
             <pre>{{ .Article.Text }}</pre>
         </div>
     </div>
+
     {{ if eq .UserID .Article.UserID }}
     <a href="/blogchad/write?id={{ .Article.ID }}" class="edit">Edit</a>
     {{ end }}
-    <h2>Comments (10):</h2>
+
+    <h2>Comments ({{ len .Comments }}):</h2>
     <h3>write a comment:</h3>
     <form method="POST" action="/api/blogchad/comment" id="comment-form">
         <textarea name="text" rows="10" cols="40"></textarea>
@@ -31,11 +33,14 @@
         <input type="hidden" name="id" value="{{ .Article.ID }}">
     </form>
 
-    </form>
-    <div class="comment" id="5">
-        <a href="#">bobie:</a>
-        <pre class="comment-text">hehe</pre>
-        <p>Date here</p>
+    {{ range .Comments }}
+
+    <div class="comment" id="{{ .ID }}">
+        <pre>{{ .Date }}</pre>
+        <a href="/chad/{{ .UserID }}">{{ .Username }}:</a>
+        <pre class="comment-text">{{ .Text }}</pre>
     </div>
+    
+    {{ end }}
 </body>
 </html>

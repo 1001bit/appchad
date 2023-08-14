@@ -11,6 +11,8 @@ import (
 
 var allFileExt = []string{"jpeg", "jpg", "png"}
 
+const filePath = "/assets/files/"
+
 func imageUpload(r *http.Request) (string, error) {
 	// ParseMultipartForm parses a request body as multipart/form-data
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
@@ -43,10 +45,10 @@ func imageUpload(r *http.Request) (string, error) {
 		return "", err
 	}
 
-	newName := "/assets/files/" + hex + "." + fileExt
+	newName := hex + "." + fileExt
 
 	// This is path which we want to store the file
-	f, err := os.OpenFile(newName[1:], os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(filePath[1:]+newName, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
 		return "", err

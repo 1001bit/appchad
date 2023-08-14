@@ -50,6 +50,16 @@ func initStatements() {
 	// edit article
 	prepareStatement("BlogEdit", "UPDATE blog SET title = ?, text = ?, image = ? WHERE id = ?")
 
+	// blog comments
+	// get comments
+	prepareStatement("ArticleCommentsGet", `
+		SELECT bc.id, u.username, bc.user_id, bc.text, bc.date
+		FROM blog_comments bc
+		JOIN users u
+		ON bc.user_id = u.id
+		WHERE bc.article_id = ?;
+	`)
+
 	// auth
 	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")
 	prepareStatement("InsertToken", "UPDATE users SET token = ? WHERE id = ?")

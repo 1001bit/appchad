@@ -50,6 +50,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		log.Println("error uploading a file:", err)
 		newArticle.Image = ""
 	}
+	newArticle.Image = filePath + newArticle.Image
 
 	var result sql.Result
 	if newArticle.ID == "" {
