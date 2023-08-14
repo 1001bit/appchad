@@ -11,7 +11,7 @@
     <form method="POST" action="/api/blogchad" enctype="multipart/form-data">
         <div>
             <label for="title">Article title:</label>
-            <input type="text" name="title" id="title" maxlength="255" required>
+            <input type="text" name="title" id="title" maxlength="255" value="{{ .Title }}" required>
         </div>
         <br>
         <div>
@@ -21,9 +21,11 @@
         <br>
         <div>
             <label for="text">Text:</label>
-            <textarea type="text" name="text" id="text" maxlength="65535" rows="20" required></textarea>
+            <textarea type="text" name="text" id="text" maxlength="65535" rows="20" required>{{ .Text }}</textarea>
         </div>
         <br>
+
+        <input type="hidden" name="id" value="{{ .ID }}">
 
         <input type="submit" value="Post" style="font-size: xx-large;">
     </form>
