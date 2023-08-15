@@ -15,7 +15,7 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 	var err error
 	id := r.FormValue("id")
 	if id != "" {
-		article, err = blogchad.GetArticle(id)
+		article, err = blogchad.ArticleGet(id)
 		if err != nil {
 			if err != sql.ErrNoRows {
 				log.Println("error getting article:", err)

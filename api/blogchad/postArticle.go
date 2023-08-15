@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/McCooll75/appchad/database"
+	"github.com/McCooll75/appchad/images"
 	"github.com/McCooll75/appchad/misc"
 )
 
@@ -14,11 +15,10 @@ type NewArticle struct {
 	Title  string
 	UserID string
 	Text   string
-	Image  string
 	ID     string
 }
 
-func PostArticle(w http.ResponseWriter, r *http.Request) {
+func ArticlePost(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
@@ -45,16 +45,9 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newArticle.Image, err = imageUpload(r)
-	if err != nil {
-		log.Println("error uploading a file:", err)
-		newArticle.Image = ""
-	}
-	newArticle.Image = filePath + newArticle.Image
-
 	var result sql.Result
 	if newArticle.ID == "" {
-		result, err = database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserID, newArticle.Text, newArticle.Image)
+		result, err = database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserID, newArticle.Text)
 		if err != nil {
 			log.Println("error posting to blog:", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
@@ -69,7 +62,7 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		}
 		newArticle.ID = strconv.Itoa(int(id))
 	} else {
-		_, err = database.Statements["BlogEdit"].Exec(newArticle.Title, newArticle.Text, newArticle.Image, newArticle.ID)
+		_, err = database.Statements["BlogEdit"].Exec(newArticle.Title, newArticle.Text, newArticle.ID)
 		if err != nil {
 			log.Println("error posting to blog:", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
@@ -77,9 +70,10 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.Redirect(w, r, "/blogchad/article/"+newArticle.ID, http.StatusSeeOther)
-
-	if newArticle.Image != "" {
-		newArticle.Image = "/assets/files/" + newArticle.Image
+	err = images.ImageUpload(r, newArticle.ID)
+	if err != nil {
+		log.Println("error uploading a file:", err)
 	}
+
+	http.Redirect(w, r, "/blogchad/article/"+newArticle.ID, http.StatusSeeOther)
 }

@@ -1,28 +1,26 @@
-package blogchad
+package images
 
 import (
 	"io"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/McCooll75/appchad/crypt"
 )
 
 var allFileExt = []string{"jpeg", "jpg", "png"}
 
-const filePath = "/assets/files/"
+const filePath = "/images/files/"
 
-func imageUpload(r *http.Request) (string, error) {
+func ImageUpload(r *http.Request, id string) error {
 	// ParseMultipartForm parses a request body as multipart/form-data
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		return "", err
+		return err
 	}
 
 	file, handler, err := r.FormFile("image") // Retrieve the file from form data
 
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer file.Close() // Close the file when we finish
 
@@ -37,25 +35,26 @@ func imageUpload(r *http.Request) (string, error) {
 	}
 
 	if !compatible {
-		return "", nil
+		return nil
 	}
-
-	hex, err := crypt.RandomHex(8)
-	if err != nil {
-		return "", err
-	}
-
-	newName := hex + "." + fileExt
 
 	// This is path which we want to store the file
-	f, err := os.OpenFile(filePath[1:]+newName, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(filePath[1:]+id, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// Copy the file to the destination path
 	io.Copy(f, file)
 
-	return newName, nil
+	return nil
+}
+
+func ImageDelete(id string) error {
+	err := os.Remove(filePath[1:] + id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

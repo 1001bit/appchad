@@ -37,9 +37,11 @@ func RouterSetup() *chi.Mux {
 		// api
 		r.Post("/api/chatchad", chatchad.ChatPost)
 		r.Get("/api/chatchad", chatchad.ChatGet)
-		r.Post("/api/blogchad", blogchad.PostArticle)
-		r.Post("/api/blogchad/comment", blogchad.PostComment)
-		r.Post("/api/chad/edit", users.EditUser)
+
+		r.Post("/api/blogchad", blogchad.ArticlePost)
+		r.Get("/blogchad/delete", blogchad.ArticleDelete)
+		r.Post("/api/blogchad/comment", blogchad.CommentPost)
+		r.Post("/api/chad/edit", users.UserEdit)
 
 		r.Get("/logout", handlers.Logout)
 
@@ -54,6 +56,7 @@ func RouterSetup() *chi.Mux {
 
 			r.Get("/blogchad", handlers.Blogchad)
 			r.Get("/blogchad/write", handlers.BlogchadWrite)
+
 			r.Get("/blogchad/article/{id}", handlers.BlogchadArticle)
 		})
 	})

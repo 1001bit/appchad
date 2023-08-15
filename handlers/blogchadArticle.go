@@ -27,7 +27,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.Article, err = blogchad.GetArticle(id)
+	data.Article, err = blogchad.ArticleGet(id)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Println("error getting article:", err)
@@ -38,7 +38,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.Comments, err = blogchad.GetComments(id)
+	data.Comments, err = blogchad.CommentsGet(id)
 
 	LoadTemplate("templates/blogchad/article.html", data, w)
 }

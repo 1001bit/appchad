@@ -33,7 +33,7 @@ func Chad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	wallJson, err := blogchad.GetWall(chi.URLParam(r, "id"))
+	wallJson, err := blogchad.WallGet(chi.URLParam(r, "id"))
 	if err != nil && err != sql.ErrNoRows {
 		http.Error(w, "Server error", http.StatusInternalServerError)
 		log.Println("error getting wall:", err)

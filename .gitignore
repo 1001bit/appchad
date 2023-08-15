@@ -1,4 +1,4 @@
 .env
 .vscode
-assets/files/*
-!assets/files/what.txt
+images/files/*
+!images/files/what.txt

@@ -30,25 +30,27 @@ func initStatements() {
 	// blogchad
 	// get wall
 	prepareStatement("BlogWallGet", `
-		SELECT blog.id, blog.title, blog.date, u.username, blog.image
+		SELECT blog.id, blog.title, blog.date, u.username
 		FROM blog
 		JOIN users u
 		ON blog.user_id = u.id;
 	`)
 	// get user wall
-	prepareStatement("UserWallGet", "SELECT id, title, date, image FROM blog WHERE user_id = ?")
+	prepareStatement("UserWallGet", "SELECT id, title, date FROM blog WHERE user_id = ?")
 	// get article
 	prepareStatement("BlogArticleGet", `
-		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text, blog.image
+		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text
 		FROM blog
 		JOIN users u
 		ON blog.user_id = u.id
 		WHERE blog.id = ?;
 	`)
 	// post article
-	prepareStatement("BlogPost", "INSERT INTO blog (title, user_id, text, image) VALUES (?, ?, ?, ?)")
+	prepareStatement("BlogPost", "INSERT INTO blog (title, user_id, text) VALUES (?, ?, ?)")
 	// edit article
-	prepareStatement("BlogEdit", "UPDATE blog SET title = ?, text = ?, image = ? WHERE id = ?")
+	prepareStatement("BlogEdit", "UPDATE blog SET title = ?, text = ? WHERE id = ?")
+	// delete article
+	prepareStatement("BlogDelete", "DELETE FROM blog WHERE id = ? AND user_id = ?")
 
 	// blog comments
 	// get comments

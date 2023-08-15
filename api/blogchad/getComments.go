@@ -12,7 +12,7 @@ type Comment struct {
 	Date     string
 }
 
-func GetComments(id string) ([]Comment, error) {
+func CommentsGet(id string) ([]Comment, error) {
 	var comments []Comment
 	rows, err := database.Statements["ArticleCommentsGet"].Query(id)
 	if err != nil {

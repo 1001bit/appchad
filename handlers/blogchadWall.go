@@ -25,7 +25,7 @@ func Blogchad(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get wall of articles
-	wall, err := blogchad.GetWall("")
+	wall, err := blogchad.WallGet("")
 	if err != nil {
 		log.Println("error getting blog wall:", err)
 		http.Error(w, "database error", http.StatusInternalServerError)

@@ -12,7 +12,7 @@
         <a href="/chad/{{ .Article.UserID }}"><h3>{{ .Article.Username }}:</h3></a>
         <div class="headers">
             <h2>{{ .Article.Title }}</h2>
-            <img src="{{ .Article.Image }}" alt="no image">
+            <img src="/img/{{ .Article.ID }}" alt="no image">
         </div>
         <div class="contents">
             <p>Text:</p>
@@ -22,6 +22,7 @@
 
     {{ if eq .UserID .Article.UserID }}
     <a href="/blogchad/write?id={{ .Article.ID }}" class="edit">Edit</a>
+    <a href="/blogchad/delete?id={{ .Article.ID }}" class="edit">Delete</a>
     {{ end }}
 
     <h2>Comments ({{ len .Comments }}):</h2>

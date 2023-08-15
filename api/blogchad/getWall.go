@@ -8,7 +8,7 @@ import (
 )
 
 // get global wall
-func GetWall(userID string) ([]byte, error) {
+func WallGet(userID string) ([]byte, error) {
 	// get rows of messages
 	var rows *sql.Rows
 	var err error
@@ -29,9 +29,9 @@ func GetWall(userID string) ([]byte, error) {
 	for rows.Next() {
 		article := Article{}
 		if userID == "" {
-			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username, &article.Image)
+			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username)
 		} else {
-			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Image)
+			rows.Scan(&article.ID, &article.Title, &article.Date)
 		}
 		// shorten title
 		if len(article.Title) > 64 {

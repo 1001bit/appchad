@@ -10,7 +10,7 @@ import (
 )
 
 // change description or username
-func EditUser(w http.ResponseWriter, r *http.Request) {
+func UserEdit(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		log.Println("error parsing form:", err)
