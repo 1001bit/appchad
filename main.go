@@ -47,11 +47,13 @@ func main() {
 	// http
 	r := router.RouterSetup()
 
-	assetsServer := http.FileServer(http.Dir("assets"))
-	r.Handle("/assets/*", http.StripPrefix("/assets", assetsServer))
+	// static files
+	assetsFileServer := http.FileServer(http.Dir("assets"))
+	r.Handle("/assets/*", http.StripPrefix("/assets", assetsFileServer))
 
-	fileServer := http.FileServer(http.Dir("images/files"))
-	r.Handle("/img/*", http.StripPrefix("/img", fileServer))
+	// uploaded images
+	imgFileServer := http.FileServer(http.Dir("images/files"))
+	r.Handle("/img/*", http.StripPrefix("/img", imgFileServer))
 
 	// favicon
 	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {

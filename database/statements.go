@@ -61,6 +61,8 @@ func initStatements() {
 		ON bc.user_id = u.id
 		WHERE bc.article_id = ?;
 	`)
+	// post comment
+	prepareStatement("ArticleCommentPost", "INSERT INTO blog_comments (user_id, article_id, text) VALUES (?, ?, ?)")
 
 	// auth
 	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")
