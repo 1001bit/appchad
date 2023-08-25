@@ -33,10 +33,11 @@ func initStatements() {
 		SELECT blog.id, blog.title, blog.date, u.username
 		FROM blog
 		JOIN users u
-		ON blog.user_id = u.id;
+		ON blog.user_id = u.id
+		ORDER BY blog.id;
 	`)
 	// get user wall
-	prepareStatement("UserWallGet", "SELECT id, title, date FROM blog WHERE user_id = ?")
+	prepareStatement("UserWallGet", "SELECT id, title, date FROM blog WHERE user_id = ? ORDER BY id")
 	// get article
 	prepareStatement("BlogArticleGet", `
 		SELECT blog.id, blog.title, blog.date, u.username, blog.user_id, blog.text
@@ -59,7 +60,8 @@ func initStatements() {
 		FROM blog_comments bc
 		JOIN users u
 		ON bc.user_id = u.id
-		WHERE bc.article_id = ?;
+		WHERE bc.article_id = ?
+		ORDER BY bc.id;
 	`)
 	// post comment
 	prepareStatement("ArticleCommentPost", "INSERT INTO blog_comments (user_id, article_id, text) VALUES (?, ?, ?)")

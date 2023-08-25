@@ -1,4 +1,4 @@
-package blogchad
+package actions
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/McCooll75/appchad/misc"
 )
 
-func ArticleDelete(w http.ResponseWriter, r *http.Request) {
+func BlogchadArticleDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	userID := misc.GetCookie("userID", w, r)
 	_, err := database.Statements["BlogDelete"].Exec(id, userID)

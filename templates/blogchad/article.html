@@ -34,6 +34,11 @@
         <input type="hidden" name="id" value="{{ .Article.ID }}">
     </form>
 
+    <div id="vote-box">
+        <button id="up" class="vote">upvote (10)</button>
+        <button id="down" class="vote">downvote (10)</button>
+    </div>
+
     {{ range .Comments }}
 
     <div class="comment" id="{{ .ID }}">

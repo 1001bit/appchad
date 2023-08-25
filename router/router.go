@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/McCooll75/appchad/actions"
 	"github.com/McCooll75/appchad/api/auth"
 	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/chatchad"
@@ -39,11 +40,12 @@ func RouterSetup() *chi.Mux {
 		r.Get("/api/chatchad", chatchad.ChatGet)
 
 		r.Post("/api/blogchad", blogchad.ArticlePost)
-		r.Get("/blogchad/delete", blogchad.ArticleDelete)
 		r.Post("/api/blogchad/comment", blogchad.CommentPost)
 		r.Post("/api/chad/edit", users.UserEdit)
 
-		r.Get("/logout", handlers.Logout)
+		// actions
+		r.Get("/blogchad/delete", actions.BlogchadArticleDelete)
+		r.Get("/logout", actions.Logout)
 
 		// pages
 		r.Group(func(r chi.Router) {

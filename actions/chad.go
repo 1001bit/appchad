@@ -1,6 +1,8 @@
-package handlers
+package actions
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	tokenCookie := &http.Cookie{

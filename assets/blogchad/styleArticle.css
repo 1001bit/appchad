@@ -47,3 +47,19 @@ h2 {
     border-radius: 6px;
     margin-block: 20px;
 }
+
+#vote-box {
+    margin-block: 20px;
+}
+
+.vote {
+    font-size: larger;
+}
+
+#up {
+    background-color: rgb(182, 226, 182);
+}
+
+#down {
+    background-color: rgb(228, 166, 166);
+}

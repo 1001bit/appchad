@@ -44,6 +44,7 @@ func ImageUpload(r *http.Request, id string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
 	// Copy the file to the destination path
 	io.Copy(f, file)
