@@ -8,13 +8,15 @@ import (
 	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/misc"
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/exp/slices"
 )
 
 // see article
 type ArticlePageData struct {
-	Article  blogchad.Article
-	Comments []blogchad.Comment
-	UserID   string
+	Article     blogchad.Article
+	Comments    []blogchad.Comment
+	UserID      string
+	ArticleVote int // 0 - none, -1 - downvote, 1 - upvote
 }
 
 func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +29,7 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// getting article
 	data.Article, err = blogchad.ArticleGet(id)
 	if err != nil {
 		if err != sql.ErrNoRows {
@@ -38,7 +41,14 @@ func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.Comments, err = blogchad.CommentsGet(id)
+	// getting if user voted
+	if slices.Contains(data.Article.Upvotes, data.UserID) {
+		data.ArticleVote = 1
+	} else if slices.Contains(data.Article.Downvotes, data.UserID) {
+		data.ArticleVote = -1
+	} else {
+		data.ArticleVote = 0
+	}
 
 	LoadTemplate("templates/blogchad/article.html", data, w)
 }

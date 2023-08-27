@@ -8,3 +8,5 @@ require (
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.12.0
 )
+
+require golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect

@@ -25,7 +25,7 @@
     <a href="/blogchad/delete?id={{ .Article.ID }}" class="edit">Delete</a>
     {{ end }}
 
-    <h2>Comments ({{ len .Comments }}):</h2>
+    <h2>Comments ({{ len .Article.Comments }}):</h2>
     <h3>write a comment:</h3>
     <form method="POST" action="/api/blogchad/comment" id="comment-form">
         <textarea name="text" rows="10" cols="40"></textarea>
@@ -35,11 +35,19 @@
     </form>
 
     <div id="vote-box">
-        <button id="up" class="vote">upvote (10)</button>
-        <button id="down" class="vote">downvote (10)</button>
+        <button id="up" class="vote
+        {{ if not (eq .ArticleVote -1) }}
+        up
+        {{ end }}
+        " value="{{ len .Article.Upvotes }}">upvote ({{ len .Article.Upvotes }})</button>
+        <button id="down" class="vote 
+        {{ if not (eq .ArticleVote 1) }}
+        down
+        {{ end }}
+        " value="{{ len .Article.Downvotes }}">downvote ({{ len .Article.Downvotes }})</button>
     </div>
 
-    {{ range .Comments }}
+    {{ range .Article.Comments }}
 
     <div class="comment" id="{{ .ID }}">
         <pre>{{ .Date }}</pre>
@@ -48,5 +56,8 @@
     </div>
     
     {{ end }}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="/assets/blogchad/scriptArticle.js"></script>
 </body>
 </html>

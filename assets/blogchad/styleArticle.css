@@ -54,12 +54,13 @@ h2 {
 
 .vote {
     font-size: larger;
+    background-color: rgb(184, 184, 184);
 }
 
-#up {
+.up {
     background-color: rgb(182, 226, 182);
 }
 
-#down {
+.down {
     background-color: rgb(228, 166, 166);
 }

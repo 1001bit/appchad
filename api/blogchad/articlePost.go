@@ -46,6 +46,7 @@ func ArticlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var result sql.Result
+	// create new article if no edit
 	if newArticle.ID == "" {
 		result, err = database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserID, newArticle.Text)
 		if err != nil {
@@ -62,6 +63,7 @@ func ArticlePost(w http.ResponseWriter, r *http.Request) {
 		}
 		newArticle.ID = strconv.Itoa(int(id))
 	} else {
+		// edit article if id is written
 		_, err = database.Statements["BlogEdit"].Exec(newArticle.Title, newArticle.Text, newArticle.ID)
 		if err != nil {
 			log.Println("error posting to blog:", err)

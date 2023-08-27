@@ -66,6 +66,10 @@ func initStatements() {
 	// post comment
 	prepareStatement("ArticleCommentPost", "INSERT INTO blog_comments (user_id, article_id, text) VALUES (?, ?, ?)")
 
+	// blog votes
+	// get article votes
+	prepareStatement("ArticleVotesGet", "SELECT user_id, vote FROM blog_votes WHERE article_id = ?")
+
 	// auth
 	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")
 	prepareStatement("InsertToken", "UPDATE users SET token = ? WHERE id = ?")
