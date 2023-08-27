@@ -25,9 +25,10 @@ type Comment struct {
 	Date     string
 }
 
-func commentsGet(id string) ([]Comment, error) {
+// get comments from database by article id
+func commentsGet(articleID string) ([]Comment, error) {
 	var comments []Comment
-	rows, err := database.Statements["ArticleCommentsGet"].Query(id)
+	rows, err := database.Statements["ArticleCommentsGet"].Query(articleID)
 	if err != nil {
 		return []Comment{}, err
 	}
@@ -42,6 +43,7 @@ func commentsGet(id string) ([]Comment, error) {
 	return comments, nil
 }
 
+// get article from database by id
 func ArticleGet(id string) (Article, error) {
 	var article Article
 	// getting article data
@@ -57,15 +59,16 @@ func ArticleGet(id string) (Article, error) {
 	if err != nil {
 		return Article{}, err
 	}
+	defer rows.Close()
 
+	// scanning votes to an article
 	for rows.Next() {
-		var userID string
-		var vote string
-		rows.Scan(&userID, &vote)
-		if vote == "up" {
-			article.Upvotes = append(article.Upvotes, userID)
+		vote := Vote{}
+		rows.Scan(&vote.UserID, &vote.Vote)
+		if vote.Vote == "up" {
+			article.Upvotes = append(article.Upvotes, vote.UserID)
 		} else {
-			article.Downvotes = append(article.Downvotes, userID)
+			article.Downvotes = append(article.Downvotes, vote.UserID)
 		}
 	}
 

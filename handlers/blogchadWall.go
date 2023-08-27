@@ -14,7 +14,7 @@ type PageLoadData struct {
 	Username string
 }
 
-// blogchad wall
+// blogchad wall page
 func Blogchad(w http.ResponseWriter, r *http.Request) {
 	data := PageLoadData{}
 	data.Username = misc.GetCookie("username", w, r)

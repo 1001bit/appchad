@@ -18,10 +18,12 @@ type ProfileData struct {
 	Articles []blogchad.Article
 }
 
+// profile page
 func Chad(w http.ResponseWriter, r *http.Request) {
 	var data ProfileData
 	var err error
 
+	// user data
 	data.User, err = users.GetUser(chi.URLParam(r, "id"))
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -33,6 +35,7 @@ func Chad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// user's wall
 	wallJson, err := blogchad.WallGet(chi.URLParam(r, "id"))
 	if err != nil && err != sql.ErrNoRows {
 		http.Error(w, "Server error", http.StatusInternalServerError)
@@ -47,6 +50,7 @@ func Chad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// if user is owner of page, he may change it
 	data.IsUser = (misc.GetCookie("username", w, r) == data.User.Username)
 
 	LoadTemplate("templates/chad.html", data, w)

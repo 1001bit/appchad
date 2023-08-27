@@ -11,7 +11,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// see article
+// all data needed for article page
 type ArticlePageData struct {
 	Article     blogchad.Article
 	Comments    []blogchad.Comment
@@ -19,6 +19,7 @@ type ArticlePageData struct {
 	ArticleVote int // 0 - none, -1 - downvote, 1 - upvote
 }
 
+// article page
 func BlogchadArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
 	data := ArticlePageData{UserID: misc.GetCookie("userID", w, r)}

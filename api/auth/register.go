@@ -5,6 +5,7 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/McCooll75/appchad/crypt"
 	"github.com/McCooll75/appchad/database"
@@ -70,12 +71,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := res.LastInsertId()
+	// get inserted user id
+	userID, err := res.LastInsertId()
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Server error", http.StatusInternalServerError)
 		return
 	}
 
-	success(w, r, int(id), inputData.Username)
+	success(w, r, strconv.Itoa(int(userID)), inputData.Username)
 }

@@ -13,9 +13,11 @@ func WallGet(userID string) ([]byte, error) {
 	var rows *sql.Rows
 	var err error
 
+	// get get global wall
 	if userID == "" {
 		rows, err = database.Statements["BlogWallGet"].Query()
 	} else {
+		// get user's wall
 		rows, err = database.Statements["UserWallGet"].Query(userID)
 	}
 	if err != nil {
@@ -28,9 +30,11 @@ func WallGet(userID string) ([]byte, error) {
 	// rows to a messages structure
 	for rows.Next() {
 		article := Article{}
+		// get global wall
 		if userID == "" {
 			rows.Scan(&article.ID, &article.Title, &article.Date, &article.Username)
 		} else {
+			// get user's wall
 			rows.Scan(&article.ID, &article.Title, &article.Date)
 		}
 		// shorten title

@@ -8,6 +8,7 @@ import (
 	"github.com/McCooll75/appchad/misc"
 )
 
+// delete article from blogchad
 func BlogchadArticleDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	userID := misc.GetCookie("userID", w, r)

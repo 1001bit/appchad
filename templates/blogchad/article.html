@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/assets/blogchad/styleArticle.css">
 </head>
 <body>
-    <div class="article">
+    <div class="article" id="{{ .Article.ID }}">
         <p>{{ .Article.Date }}</p>
         <a href="/chad/{{ .Article.UserID }}"><h3>{{ .Article.Username }}:</h3></a>
         <div class="headers">

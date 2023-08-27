@@ -1,22 +1,66 @@
-const upvotes = $("#up").val();
-const downvotes = $("#down").val();
+let upvotes = parseInt($("#up").val());
+let downvotes = parseInt($("#down").val());
+const articleID = $(".article").attr("id");
+
+function vote(rate){
+    fetch("/api/blogchad/vote", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({articleID: articleID, vote: rate}),
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
 
 $("#up").click(function (e) { 
     e.preventDefault();
     
+    // light button
+    if($("#up").hasClass("up")){
+        return
+    }
     $("#up").toggleClass("up", true);
+
+    // show text
+    upvotes += 1
+    $("#up").html("upvote ("+ upvotes + ")");
+
+    // unlight opposite button
+    if(!$("#down").hasClass("down")){
+        return
+    }
     $("#down").toggleClass("down", false);
 
-    $("#up").html("upvote ("+ (parseInt(upvotes) + 1) + ")");
-    $("#down").html("downvote ("+ (parseInt(downvotes)) + ")");
+    // show text
+    downvotes -= 1
+    $("#down").html("downvote ("+ downvotes + ")");
+
+    vote("up")
 });
 
 $("#down").click(function (e) { 
     e.preventDefault();
-    
-    $("#up").toggleClass("up", false);
+
+    // light button
+    if($("#down").hasClass("down")){
+        return
+    }
     $("#down").toggleClass("down", true);
 
-    $("#up").html("upvote ("+ (parseInt(upvotes)) + ")");
-    $("#down").html("downvote ("+ (parseInt(downvotes) + 1) + ")");
+    // show text
+    downvotes += 1
+    $("#down").html("downvote ("+ downvotes + ")");
+
+    // unlight opposite button
+    if(!$("#up").hasClass("up")){
+        return
+    }
+    $("#up").toggleClass("up", false);
+
+    // show text
+    upvotes -= 1
+    $("#up").html("upvote ("+ upvotes + ")");
+
+    vote("down")
 });

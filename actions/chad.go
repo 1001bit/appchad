@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// logout from appchad account
 func Logout(w http.ResponseWriter, r *http.Request) {
 	tokenCookie := &http.Cookie{
 		Name:   "token",

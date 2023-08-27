@@ -35,7 +35,6 @@ func ChatPost(w http.ResponseWriter, r *http.Request) {
 
 	// get text from request
 	err = json.NewDecoder(r.Body).Decode(&requestData)
-
 	if err != nil {
 		log.Println("error getting text:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)

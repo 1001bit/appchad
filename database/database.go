@@ -51,12 +51,13 @@ func CheckUserToken(userID, token string) (bool, error) {
 }
 
 // is password correct for username
-func CheckUserPasswordGetID(username, password string) (int, error) {
+func CheckUserPasswordGetID(username, password string) (string, error) {
 	var dbPassword string
-	var id int
-	err := Statements["PasswordCorrect"].QueryRow(username).Scan(&dbPassword, &id)
+	var userID string
+	err := Statements["PasswordCorrect"].QueryRow(username).Scan(&dbPassword, &userID)
+	// if no such user or password is incorrect
 	if err == sql.ErrNoRows || !crypt.CheckHash(password, dbPassword) {
-		return 0, nil
+		return "", nil
 	}
-	return id, err
+	return userID, err
 }

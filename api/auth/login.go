@@ -9,6 +9,7 @@ import (
 	"github.com/McCooll75/appchad/database"
 )
 
+// auth page input
 type Input struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -32,11 +33,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// onlu non special chars
 	if inputData.Username != html.EscapeString(inputData.Username) {
 		http.Error(w, "username must contain no special characters!", http.StatusBadRequest)
 		return
 	}
 
+	// no empty pass nor username
 	if inputData.Password == "" || inputData.Username == "" {
 		http.Error(w, "password or username is empty", http.StatusBadRequest)
 		return
@@ -50,7 +53,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if id == 0 {
+	// if no such user or password is incorrect
+	if id == "" {
 		http.Error(w, "incorrect password or username", http.StatusBadRequest)
 		return
 	}

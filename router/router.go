@@ -36,11 +36,14 @@ func RouterSetup() *chi.Mux {
 		r.Use(wideMiddleware)
 
 		// api
+		// chatchad
 		r.Post("/api/chatchad", chatchad.ChatPost)
 		r.Get("/api/chatchad", chatchad.ChatGet)
-
+		// blogchad
 		r.Post("/api/blogchad", blogchad.ArticlePost)
 		r.Post("/api/blogchad/comment", blogchad.CommentPost)
+		r.Post("/api/blogchad/vote", blogchad.VotePost)
+		// chad
 		r.Post("/api/chad/edit", users.UserEdit)
 
 		// actions
@@ -55,10 +58,9 @@ func RouterSetup() *chi.Mux {
 			r.Get("/home", handlers.Home)
 			r.Get("/chatchad", handlers.Chatchad)
 			r.Get("/chad/{id}", handlers.Chad)
-
+			// blogchad
 			r.Get("/blogchad", handlers.Blogchad)
 			r.Get("/blogchad/write", handlers.BlogchadWrite)
-
 			r.Get("/blogchad/article/{id}", handlers.BlogchadArticle)
 		})
 	})

@@ -3,14 +3,13 @@ package auth
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/McCooll75/appchad/crypt"
 	"github.com/McCooll75/appchad/database"
 )
 
 // if login or register was successful
-func success(w http.ResponseWriter, r *http.Request, userID int, username string) {
+func success(w http.ResponseWriter, r *http.Request, userID string, username string) {
 	// Generate token
 	token, err := crypt.RandomHex(32)
 	if err != nil {
@@ -42,7 +41,7 @@ func success(w http.ResponseWriter, r *http.Request, userID int, username string
 	}
 	userIDCookie := &http.Cookie{
 		Name:   "userID",
-		Value:  strconv.Itoa(userID),
+		Value:  userID,
 		Path:   "/",
 		MaxAge: 60 * 60 * 24 * 365,
 	}

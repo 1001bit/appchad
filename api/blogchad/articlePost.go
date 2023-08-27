@@ -18,9 +18,16 @@ type NewArticle struct {
 	ID     string
 }
 
+// posting an article to a database
 func ArticlePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var err error
 
+	// parse form with file
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		log.Println("error parsing form:", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
@@ -46,15 +53,16 @@ func ArticlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var result sql.Result
-	// create new article if no edit
+	// create new article if dont edit
 	if newArticle.ID == "" {
+		// post to blog
 		result, err = database.Statements["BlogPost"].Exec(newArticle.Title, newArticle.UserID, newArticle.Text)
 		if err != nil {
 			log.Println("error posting to blog:", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 			return
 		}
-
+		// get inserted article id
 		id, err := result.LastInsertId()
 		if err != nil {
 			log.Println("error getting last id:", err)
@@ -72,6 +80,7 @@ func ArticlePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// upload and image to folder
 	err = images.ImageUpload(r, newArticle.ID)
 	if err != nil {
 		log.Println("error uploading a file:", err)

@@ -11,19 +11,22 @@ var allFileExt = []string{"jpeg", "jpg", "png"}
 
 const filePath = "/images/files/"
 
+// load image from request to a folder
 func ImageUpload(r *http.Request, id string) error {
 	// ParseMultipartForm parses a request body as multipart/form-data
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		return err
 	}
 
-	file, handler, err := r.FormFile("image") // Retrieve the file from form data
+	// get file from request
+	file, handler, err := r.FormFile("image")
 
 	if err != nil {
 		return err
 	}
-	defer file.Close() // Close the file when we finish
+	defer file.Close()
 
+	// file extension (no non-image)
 	fileExt := append(strings.Split(handler.Filename, "."), "")[1]
 	var compatible bool = false
 
@@ -38,7 +41,7 @@ func ImageUpload(r *http.Request, id string) error {
 		return nil
 	}
 
-	// This is path which we want to store the file
+	// create file on path
 	f, err := os.OpenFile(filePath[1:]+id, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
@@ -46,7 +49,7 @@ func ImageUpload(r *http.Request, id string) error {
 	}
 	defer f.Close()
 
-	// Copy the file to the destination path
+	// Copy the request file to a new created file in folder
 	io.Copy(f, file)
 
 	return nil

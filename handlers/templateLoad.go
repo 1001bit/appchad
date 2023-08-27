@@ -8,6 +8,7 @@ import (
 
 var TemplateCache = make(map[string]*template.Template)
 
+// load template func
 func LoadTemplate(filename string, data any, w http.ResponseWriter) {
 	var err error
 	t, ok := TemplateCache[filename]

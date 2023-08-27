@@ -11,7 +11,7 @@ $(document).ready(() => {
 
 // fetch api and add messages to page
 function chatGet(){
-    return fetch(`api/chatchad?id=${lastMessageID}`, {
+    return fetch(`/api/chatchad?id=${lastMessageID}`, {
         method: "GET"
     })
     .then(response => response.json())
@@ -28,7 +28,7 @@ function chatGet(){
 
 // post message to chat
 async function chatPost(msgText){
-    return fetch("api/chatchad", {
+    return fetch("/api/chatchad", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({text: msgText}),

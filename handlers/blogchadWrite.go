@@ -9,7 +9,7 @@ import (
 	"github.com/McCooll75/appchad/misc"
 )
 
-// create article
+// create article page
 func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 	var article blogchad.Article
 	var err error
@@ -25,6 +25,7 @@ func BlogchadWrite(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "inorrect id", http.StatusNotFound)
 			return
 		}
+		// only article creator may change it
 		if article.UserID != misc.GetCookie("userID", w, r) {
 			http.Error(w, "inorrect id", http.StatusNotFound)
 			return

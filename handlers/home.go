@@ -6,6 +6,7 @@ import (
 	"github.com/McCooll75/appchad/misc"
 )
 
+// home page
 func Home(w http.ResponseWriter, r *http.Request) {
 	username := misc.GetCookie("username", w, r)
 	// error

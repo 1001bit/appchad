@@ -11,6 +11,12 @@ import (
 
 // change description or username
 func UserEdit(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "not allowed method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// get data
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		log.Println("error parsing form:", err)
@@ -24,6 +30,7 @@ func UserEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// post data to a database
 	userID := misc.GetCookie("userID", w, r)
 	_, err := database.Statements["UserEdit"].Exec(newDesc, newUser, userID)
 	if err != nil {
@@ -32,6 +39,7 @@ func UserEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// change cookie
 	usernameCookie := &http.Cookie{
 		Name:   "username",
 		Value:  newUser,
