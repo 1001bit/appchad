@@ -16,51 +16,35 @@ function vote(rate){
 $("#up").click(function (e) { 
     e.preventDefault();
     
-    // light button
-    if($("#up").hasClass("up")){
-        return
-    }
-    $("#up").toggleClass("up", true);
-
-    // show text
+    vote("up")
     upvotes += 1
-    $("#up").html("upvote ("+ upvotes + ")");
 
     // unlight opposite button
-    if(!$("#down").hasClass("down")){
-        return
+    if($("#down").hasClass("down") && !$("#up").hasClass("up")){
+        downvotes -= 1
     }
+
+    $("#up").toggleClass("up", true);
     $("#down").toggleClass("down", false);
 
-    // show text
-    downvotes -= 1
+    $("#up").html("upvote ("+ upvotes + ")");
     $("#down").html("downvote ("+ downvotes + ")");
-
-    vote("up")
 });
 
 $("#down").click(function (e) { 
     e.preventDefault();
 
-    // light button
-    if($("#down").hasClass("down")){
-        return
-    }
-    $("#down").toggleClass("down", true);
-
-    // show text
+    vote("down")
     downvotes += 1
-    $("#down").html("downvote ("+ downvotes + ")");
 
     // unlight opposite button
-    if(!$("#up").hasClass("up")){
-        return
+    if(!$("#down").hasClass("down") && $("#up").hasClass("up")){
+        upvotes -= 1
     }
+
     $("#up").toggleClass("up", false);
+    $("#down").toggleClass("down", true);
 
-    // show text
-    upvotes -= 1
     $("#up").html("upvote ("+ upvotes + ")");
-
-    vote("down")
+    $("#down").html("downvote ("+ downvotes + ")");
 });
