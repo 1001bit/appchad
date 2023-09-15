@@ -1,7 +1,9 @@
 const updateTime = 3000;
 let interval = window.setInterval(chatGet, updateTime);
 let lastMessageID = 0
+
 const chatBox = $("#chat");
+const typebox = $("#typebox")
 
 $(document).ready(() => {
     chatGet().then(() => {
@@ -44,10 +46,10 @@ function addNewMessages(data){
     const fragment = document.createDocumentFragment()
 
     for(let i = 0; i < data.length; i++){
-        let message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
-        let date = $("<pre></pre>").text(data[i]['date']);
-        let user = $("<a></a>").text(`${data[i]['username']}:`).attr("href", "/chad/"+data[i]["userid"]);
-        let text = $("<pre></pre>").html(data[i]['text'])
+        const message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
+        const date = $("<pre></pre>").text(data[i]['date']);
+        const user = $("<a></a>").text(`${data[i]['username']}:`).attr("href", "/chad/"+data[i]["userid"]);
+        const text = $("<pre></pre>").html(data[i]['text'])
         message.append(date);
         message.append(user)
         message.append(text);
@@ -63,7 +65,6 @@ function addNewMessages(data){
 
 // submit button
 $(".send").click(async () => {
-    const typebox = $(".typebox").last()
     if(typebox.val().length == 0){
         return
     }
