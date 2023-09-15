@@ -16,6 +16,10 @@ function vote(rate){
 $("#up").click(function (e) { 
     e.preventDefault();
     
+    if($("#up").hasClass("up") && !$("#down").hasClass("down")){
+        return
+    }
+
     vote("up")
     upvotes += 1
 
@@ -33,6 +37,10 @@ $("#up").click(function (e) {
 
 $("#down").click(function (e) { 
     e.preventDefault();
+
+    if(!$("#up").hasClass("up") && $("#down").hasClass("down")){
+        return
+    }
 
     vote("down")
     downvotes += 1

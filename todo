@@ -1,4 +1,7 @@
 TODO:
-notifications
+
 comment / chat message reply
-chat image send
+chat image send via link
+
+Notification via SSE
+Chat via Websocket
