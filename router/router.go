@@ -8,6 +8,7 @@ import (
 	"github.com/McCooll75/appchad/api/notifications"
 	"github.com/McCooll75/appchad/api/users"
 	"github.com/McCooll75/appchad/handlers"
+	"github.com/McCooll75/appchad/websockets"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -52,6 +53,9 @@ func RouterSetup() *chi.Mux {
 		// actions
 		r.Get("/blogchad/delete", actions.BlogchadArticleDelete)
 		r.Get("/logout", actions.Logout)
+
+		// websocket
+		r.Get("/ws", websockets.Socket)
 
 		// pages
 		r.Group(func(r chi.Router) {
