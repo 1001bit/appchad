@@ -23,3 +23,9 @@ Chat via Websocket:
 - User GETs the page and the chat get loaded by javascript
 - When the message is sent, the server sends the user it's contents
 - When the message is given, the server gets the message, adds it to database and sends the message to everybody else
+
+Plan:
+- Make chat post first
+- Make chat get
+- Make chat essentials
+- make notifications
