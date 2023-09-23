@@ -2,9 +2,10 @@ TODO:
 
 comment / chat message reply
 chat image send via link
+message / comment linking
 
 Notification via SSE:
-- User A likes User's B article and article gets upvote
+- User A likes User B's article and article gets upvote
 - server gets that and makes a notification:
 {
     RecID
@@ -12,13 +13,13 @@ Notification via SSE:
     Action(Enum: "vote, comment-reply, chat-reply, comment")
     id (comment, article, chat message)
 }
-- If user is online: send notification to him
-- If user is offline: add notification to database and delete it after reading
+- If user B is online: send notification to him
+- If user B is offline: add notification to database and delete it after reading
 - Save the message on user's local storage
 - Clicking on notification will redirect to comment, article etc.
 
 
 Chat via Websocket:
-- User GETs the page and the chat get loaded by template
+- User GETs the page and the chat get loaded by javascript
 - When the message is sent, the server sends the user it's contents
 - When the message is given, the server gets the message, adds it to database and sends the message to everybody else
