@@ -30,14 +30,7 @@ function chatGet(){
 
 // post message to chat
 async function chatPost(msgText){
-    return fetch("/api/chatchad", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({text: msgText}),
-    })
-    .catch(error => {
-        console.log(error)
-    })
+    socket.send(JSON.stringify({type: "chat", text: msgText}))
 }
 
 // add messages to page from data
