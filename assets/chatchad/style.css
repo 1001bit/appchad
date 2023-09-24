@@ -72,9 +72,12 @@
 /*  */
 
 body {
-  /* background: var(--context-bg); */
-  /* font-family: "Inter", sans-serif; */
   overflow-y: hidden;
+}
+
+img {
+  height: calc(80vh - 400px);
+  object-fit: contain;
 }
 
 pre {
@@ -89,6 +92,10 @@ pre {
   margin: 5px;
   box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.5);
   background-color: rgb(240, 240, 240);
+}
+
+.highlight {
+  background-color: rgb(231, 250, 234);
 }
 
 #chat {

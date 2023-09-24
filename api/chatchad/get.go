@@ -14,18 +14,15 @@ import (
 type Message struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
-	UserID   string `json:"userid"`
+	UserID   string `json:"userID"`
 	Text     string `json:"text"`
 	Date     string `json:"date"`
 }
 
 // Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
-	// get id of last client message
-	lastMsgID := r.FormValue("id")
-
 	// get rows of messages
-	rows, err := database.Statements["ChatGet"].Query(lastMsgID)
+	rows, err := database.Statements["ChatGet"].Query()
 	if err != nil {
 		if err != sql.ErrNoRows {
 			http.Error(w, "Error querying database", http.StatusInternalServerError)

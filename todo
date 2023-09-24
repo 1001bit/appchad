@@ -1,10 +1,9 @@
 TODO:
 
 comment / chat message reply
-chat image send via link
 message / comment linking
 
-Notification via SSE:
+Notification via websocket:
 - User A likes User B's article and article gets upvote
 - server gets that and makes a notification:
 {
@@ -18,14 +17,6 @@ Notification via SSE:
 - Save the message on user's local storage
 - Clicking on notification will redirect to comment, article etc.
 
-
-Chat via Websocket:
-- User GETs the page and the chat get loaded by javascript
-- When the message is sent, the server sends the user it's contents
-- When the message is given, the server gets the message, adds it to database and sends the message to everybody else
-
 Plan:
-- Make chat post
-- Make chat get
 - Make chat essentials
 - make notifications

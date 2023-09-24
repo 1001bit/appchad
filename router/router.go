@@ -5,7 +5,6 @@ import (
 	"github.com/McCooll75/appchad/api/auth"
 	"github.com/McCooll75/appchad/api/blogchad"
 	"github.com/McCooll75/appchad/api/chatchad"
-	"github.com/McCooll75/appchad/api/notifications"
 	"github.com/McCooll75/appchad/api/users"
 	"github.com/McCooll75/appchad/handlers"
 	"github.com/McCooll75/appchad/websockets"
@@ -46,8 +45,6 @@ func RouterSetup() *chi.Mux {
 		r.Post("/api/blogchad/vote", blogchad.VotePost)
 		// chad
 		r.Post("/api/chad/edit", users.UserEdit)
-		// notifications
-		r.Get("/api/notifications", notifications.Notifications)
 
 		// actions
 		r.Get("/blogchad/delete", actions.BlogchadArticleDelete)

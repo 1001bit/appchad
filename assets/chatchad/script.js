@@ -1,59 +1,79 @@
-const updateTime = 3000;
-let interval = window.setInterval(chatGet, updateTime);
-let lastMessageID = 0
-
 const chatBox = $("#chat");
 const typebox = $("#typebox")
 
-$(document).ready(() => {
-    chatGet().then(() => {
-        chatBox.scrollTop(chatBox[0].scrollHeight);
-    })
-})
+const urlParams = new URLSearchParams(window.location.search);
+const messageId = urlParams.get("id")
 
-// fetch api and add messages to page
-function chatGet(){
-    return fetch(`/api/chatchad?id=${lastMessageID}`, {
+// fetch api and add all messages to page on starup
+$(document).ready(() => {
+    fetch(`/api/chatchad`, {
         method: "GET"
     })
     .then(response => response.json())
     .then(data => {
         if (data.length > 0){
-            lastMessageID = data[data.length - 1].id;
             addNewMessages(data)
+        }
+    }).then(() => {
+        if (messageId == null){
+            chatBox.scrollTop(chatBox[0].scrollHeight);
+        } else {
+            distance = $(`#${messageId}`)[0].offsetTop - chatBox[0].offsetTop
+            console.log($(`#${messageId}`)[0].offsetTop, chatBox[0].offsetTop)
+            chatBox.scrollTop(distance)
+            $(`#${messageId}`).addClass("highlight")
         }
     })
     .catch(error => {
         console.log(error)
     })
-}
-
-// post message to chat
-async function chatPost(msgText){
-    socket.send(JSON.stringify({type: "chat", text: msgText}))
-}
+})
 
 // add messages to page from data
 function addNewMessages(data){
-    const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight-1;
     const fragment = document.createDocumentFragment()
 
+    // make readable messages from data
     for(let i = 0; i < data.length; i++){
-        const message = $("<div></div>").addClass("message").attr("id", data[i]['id']);
-        const date = $("<pre></pre>").text(data[i]['date']);
-        const user = $("<a></a>").text(`${data[i]['username']}:`).attr("href", "/chad/"+data[i]["userid"]);
-        const text = $("<pre></pre>").html(data[i]['text'])
-        message.append(date);
-        message.append(user)
-        message.append(text);
-        fragment.append(message[0]);
+        fragment.append(makeNewMessage(data[i])[0]);
     }
     chatBox.append(fragment)
+}
 
+// when server sent a message - add the chat message to a wall
+socket.onmessage = (event) => {
+    data = JSON.parse(event.data)
+    if (data.type != "chat") {
+        return
+    }
+
+    const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight-1;
+    message = makeNewMessage(data)
+    chatBox.append(message)
     // automatically scroll down
     if(doScroll){
         chatBox.scrollTop(chatBox[0].scrollHeight);
     }
+}
+
+// create one new message from data
+function makeNewMessage(data){
+    const message = $("<div></div>").addClass("message").attr("id", data['id']);
+    const date = $("<pre></pre>").text(data['date']);
+    const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"]);
+
+    var pattern = /\[img\]([^\]]+?)\[\/img\]/g;
+    const text = $("<pre></pre>").html(data['text'].replace(pattern, '<img alt="[img][/img]" src="$1"></img>'))
+    
+    message.append(date);
+    message.append(user)
+    message.append(text);
+    return message
+}
+
+// post message to chat
+function chatPost(msgText){
+    socket.send(JSON.stringify({type: "chat", text: msgText}))
 }
 
 // submit button
@@ -64,13 +84,8 @@ $(".send").click(async () => {
 
     const text = typebox.val()
     typebox.val("")
-
-    window.clearInterval(interval)
-    interval = window.setInterval(chatGet, updateTime);
     
-    chatPost(text).then(() => {
-        chatGet()
-    })
+    chatPost(text)
 })
 
 //////////////////

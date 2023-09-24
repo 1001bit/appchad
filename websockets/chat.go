@@ -1,23 +1,41 @@
 package websockets
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/McCooll75/appchad/database"
 )
 
 func chatPost(data map[string]interface{}) {
-	text, userID := data["text"], data["userID"]
-	if text == "" {
+	if data["text"] == "" {
 		return
 	}
-	log.Println(text, userID)
 
-	_, err := database.Statements["ChatPost"].Exec(userID, text)
+	// insert message to database
+	res, err := database.Statements["ChatPost"].Exec(data["userID"], data["text"])
 	if err != nil {
 		log.Println("error executing statement:", err)
 		return
 	}
+	// get result of inserting
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Println("error getting row id:", err)
+		return
+	}
+	data["id"] = fmt.Sprint(id)
+	var username, date string
 
-	Messages <- data
+	err = database.Statements["ChatMsgGet"].QueryRow(data["id"]).Scan(&username, &date)
+	if err != nil {
+		log.Println("error querying a row:", err)
+		return
+	}
+	data["username"], data["date"] = username, date
+
+	// send the message to every client
+	for userID := range Clients {
+		Clients[userID].conn.WriteJSON(data)
+	}
 }

@@ -21,8 +21,15 @@ func initStatements() {
 		FROM chat
 		JOIN users u 
 		ON chat.user_id = u.id
-		WHERE chat.id>?
 		ORDER BY chat.id;
+	`)
+	// get a single message
+	prepareStatement("ChatMsgGet", `
+		SELECT u.username, chat.date
+		FROM chat
+		JOIN users u 
+		ON chat.user_id = u.id
+		WHERE chat.id=?;
 	`)
 	// post to chat
 	prepareStatement("ChatPost", "INSERT INTO chat (user_id, text) VALUES (?, ?)")

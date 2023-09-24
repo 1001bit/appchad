@@ -9,30 +9,50 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type Client struct {
+	conn *websocket.Conn
+	page string
+}
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
 
-var Messages = make(chan map[string]interface{})
+var Clients = make(map[string]Client)
 
 func Socket(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+
+	// upgrade connection
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("error connecting a websocket:", err)
 		return
 	}
+
+	// setting up client
+	client := Client{conn, ""}
+	userID := misc.GetCookie("userID", w, r)
+	Clients[userID] = client
+
 	defer conn.Close()
+	defer delete(Clients, userID)
 
-	log.Println("no errors connecting a websocket")
+	log.Println("connected a websocket for", misc.GetCookie("username", w, r))
 
+	// reading message from client loop
 	for {
 		_, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("error reading websocket:", err)
-			continue
+			delete(Clients, userID)
+			return
 		}
 
+		// getting data
 		data := make(map[string]interface{})
 		data["userID"] = misc.GetCookie("userID", w, r)
 
@@ -42,25 +62,19 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
+		// deciding what to do with posted message
 		if msgType, ok := data["type"].(string); ok {
 			switch msgType {
 			case "chat":
-				chatPost(data)
+				go chatPost(data)
 			}
 		}
 
+		// closing the connection
 		select {
-		case message := <-Messages:
-			log.Println(message)
-			jsonData, err := json.Marshal(message)
-			if err != nil {
-				log.Println("error marshaling:", err)
-				continue
-			}
-			w.Write(jsonData)
-			w.(http.Flusher).Flush()
 		case <-r.Context().Done():
 			log.Println("connection closed")
+			delete(Clients, userID)
 			return
 		default:
 			continue
