@@ -15,13 +15,13 @@ $(document).ready(() => {
             addNewMessages(data)
         }
     }).then(() => {
-        if (messageId == null){
-            chatBox.scrollTop(chatBox[0].scrollHeight);
-        } else {
+        if ($(`#${messageId}`)[0]){
             distance = $(`#${messageId}`)[0].offsetTop - chatBox[0].offsetTop
             console.log($(`#${messageId}`)[0].offsetTop, chatBox[0].offsetTop)
             chatBox.scrollTop(distance)
             $(`#${messageId}`).addClass("highlight")
+        } else {
+            chatBox.scrollTop(chatBox[0].scrollHeight);
         }
     })
     .catch(error => {
@@ -58,16 +58,20 @@ socket.onmessage = (event) => {
 
 // create one new message from data
 function makeNewMessage(data){
-    const message = $("<div></div>").addClass("message").attr("id", data['id']);
-    const date = $("<pre></pre>").text(data['date']);
-    const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"]);
+    const link = $("<a></a>").text(`message id: ${data['id']}`).attr("href", "/chatchad?id="+data["id"])
+    link.attr("style", "position:relative;float:right")
+    const date = $("<pre></pre>").text(data['date'])
+    const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"])
+    const message = $("<div></div>").addClass("message").attr("id", data['id'])
+    
 
     var pattern = /\[img\]([^\]]+?)\[\/img\]/g;
     const text = $("<pre></pre>").html(data['text'].replace(pattern, '<img alt="[img][/img]" src="$1"></img>'))
     
-    message.append(date);
+    message.append(link)
+    message.append(date)
     message.append(user)
-    message.append(text);
+    message.append(text)
     return message
 }
 
@@ -87,6 +91,11 @@ $(".send").click(async () => {
     
     chatPost(text)
 })
+
+// MESSAGE LINK COPY
+$(".copy").click(function(){
+    alert("The paragraph was clicked.");
+}); 
 
 //////////////////
 // STYLES

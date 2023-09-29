@@ -1,7 +1,6 @@
 TODO:
 
 comment / chat message reply
-message / comment linking
 
 Notification via websocket:
 - User A likes User B's article and article gets upvote
