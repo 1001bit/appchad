@@ -33,7 +33,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// onlu non special chars
+	// only non special chars
 	if inputData.Username != html.EscapeString(inputData.Username) {
 		http.Error(w, "username must contain no special characters!", http.StatusBadRequest)
 		return

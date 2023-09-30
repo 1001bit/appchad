@@ -17,7 +17,6 @@ $(document).ready(() => {
     }).then(() => {
         if ($(`#${messageId}`)[0]){
             distance = $(`#${messageId}`)[0].offsetTop - chatBox[0].offsetTop
-            console.log($(`#${messageId}`)[0].offsetTop, chatBox[0].offsetTop)
             chatBox.scrollTop(distance)
             $(`#${messageId}`).addClass("highlight")
         } else {
@@ -60,18 +59,30 @@ socket.onmessage = (event) => {
 function makeNewMessage(data){
     const link = $("<a></a>").text(`message id: ${data['id']}`).attr("href", "/chatchad?id="+data["id"])
     link.attr("style", "position:relative;float:right")
+
     const date = $("<pre></pre>").text(data['date'])
     const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"])
     const message = $("<div></div>").addClass("message").attr("id", data['id'])
-    
 
-    var pattern = /\[img\]([^\]]+?)\[\/img\]/g;
-    const text = $("<pre></pre>").html(data['text'].replace(pattern, '<img alt="[img][/img]" src="$1"></img>'))
+    const reply = $("<button>reply</button>")
+    reply.on("click", () => {
+        typebox.val(`#${data["id"]}, ` + typebox.val())
+    })
+    
+    const imgPattern = /\[img\]([^\]]+?)\[\/img\]/g;
+    const replyPattern = /#(\d+)/g
+
+    let textContent = data['text']
+    textContent = textContent.replace(imgPattern, '<img alt="[img][/img]" src="$1"></img>')
+    textContent = textContent.replace(replyPattern, '<a href="/chatchad?id=$1">$&</a>')
+    const text = $("<pre></pre>").html(textContent)
+
     
     message.append(link)
     message.append(date)
     message.append(user)
     message.append(text)
+    message.append(reply)
     return message
 }
 
