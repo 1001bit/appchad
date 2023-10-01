@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/McCooll75/appchad/database"
+	"github.com/McCooll75/appchad/misc"
+	"github.com/McCooll75/appchad/websockets"
 )
 
 // GET - get messages below id
@@ -21,6 +23,9 @@ type Message struct {
 
 // Get messages from database
 func ChatGet(w http.ResponseWriter, r *http.Request) {
+	// make websocket know that the user is on chat
+	websockets.SetPage(misc.GetCookie("userID", w, r), "chat")
+
 	// get rows of messages
 	rows, err := database.Statements["ChatGet"].Query()
 	if err != nil {

@@ -14,12 +14,21 @@ type Client struct {
 	page string
 }
 
+type jsonMap map[string]interface{}
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
 
 var Clients = make(map[string]Client)
+
+func SetPage(userID, page string) {
+	if client, ok := Clients[userID]; ok {
+		client.page = page
+		Clients[userID] = client
+	}
+}
 
 func Socket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
@@ -48,12 +57,11 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		_, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("error reading websocket:", err)
-			delete(Clients, userID)
 			return
 		}
 
 		// getting data
-		data := make(map[string]interface{})
+		data := make(jsonMap)
 		data["userID"] = misc.GetCookie("userID", w, r)
 
 		err = json.Unmarshal(p, &data)
@@ -65,6 +73,7 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		// deciding what to do with posted message
 		if msgType, ok := data["type"].(string); ok {
 			switch msgType {
+			// add message to database and send it to everybody
 			case "chat":
 				go chatPost(data)
 			}
@@ -74,7 +83,6 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-r.Context().Done():
 			log.Println("connection closed")
-			delete(Clients, userID)
 			return
 		default:
 			continue

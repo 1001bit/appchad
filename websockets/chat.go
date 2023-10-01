@@ -7,7 +7,7 @@ import (
 	"github.com/McCooll75/appchad/database"
 )
 
-func chatPost(data map[string]interface{}) {
+func chatPost(data jsonMap) {
 	if data["text"] == "" {
 		return
 	}
@@ -36,6 +36,9 @@ func chatPost(data map[string]interface{}) {
 
 	// send the message to every client
 	for userID := range Clients {
+		if Clients[userID].page != "chat" {
+			continue
+		}
 		Clients[userID].conn.WriteJSON(data)
 	}
 }

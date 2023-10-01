@@ -6,9 +6,7 @@ const messageId = urlParams.get("id")
 
 // fetch api and add all messages to page on starup
 $(document).ready(() => {
-    fetch(`/api/chatchad`, {
-        method: "GET"
-    })
+    fetch(`/api/chatchad`)
     .then(response => response.json())
     .then(data => {
         if (data.length > 0){

@@ -1,21 +1,10 @@
 TODO:
 
-comment reply
-
 Notification via websocket:
 - User A likes User B's article and article gets upvote
-- server gets that and makes a notification:
-{
-    RecID
-    SenderID
-    Action(Enum: "vote, comment-reply, chat-reply, comment")
-    id (comment, article, chat message)
-}
+- server gets that and makes a notification (stored in JSON)
 - If user B is online: send notification to him
 - If user B is offline: add notification to database and delete it after reading
 - Save the message on user's local storage
 - Clicking on notification will redirect to comment, article etc.
-
-Plan:
-- Make chat essentials
-- make notifications
+- 50 Notifications max
