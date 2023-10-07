@@ -34,7 +34,7 @@ func RouterSetup() *chi.Mux {
 
 	// for logged people
 	router.Group(func(r chi.Router) {
-		r.Use(wideMiddleware)
+		r.Use(loggedInMiddleware)
 
 		// api
 		// chatchad

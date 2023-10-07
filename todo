@@ -8,3 +8,9 @@ Notification via websocket:
 - Save the message on user's local storage
 - Clicking on notification will redirect to comment, article etc.
 - 50 Notifications max
+
+Tasks:
+- make html and css for notifications
+- make it work
+- article comment replies
+- make it for upvotes and comment replies

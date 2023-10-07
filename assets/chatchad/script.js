@@ -37,13 +37,7 @@ function addNewMessages(data){
     chatBox.append(fragment)
 }
 
-// when server sent a message - add the chat message to a wall
-socket.onmessage = (event) => {
-    data = JSON.parse(event.data)
-    if (data.type != "chat") {
-        return
-    }
-
+function newMessage(data){
     const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight-1;
     message = makeNewMessage(data)
     chatBox.append(message)
@@ -55,8 +49,7 @@ socket.onmessage = (event) => {
 
 // create one new message from data
 function makeNewMessage(data){
-    const link = $("<a></a>").text(`message id: ${data['id']}`).attr("href", "/chatchad?id="+data["id"])
-    link.attr("style", "position:relative;float:right")
+    const link = $("<a></a>").text(`message id: ${data['id']}`).attr("href", "/chatchad?id="+data["id"]).addClass("link")
 
     const date = $("<pre></pre>").text(data['date'])
     const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"])
@@ -64,17 +57,16 @@ function makeNewMessage(data){
 
     const reply = $("<button>reply</button>")
     reply.on("click", () => {
-        typebox.val(`#${data["id"]}, ` + typebox.val())
+        typebox.val(`@${data["userID"]}, ` + typebox.val())
     })
     
     const imgPattern = /\[img\]([^\]]+?)\[\/img\]/g;
-    const replyPattern = /#(\d+)/g
+    const mentionPattern = /@(\d+)/g
 
     let textContent = data['text']
     textContent = textContent.replace(imgPattern, '<img alt="[img][/img]" src="$1"></img>')
-    textContent = textContent.replace(replyPattern, '<a href="/chatchad?id=$1">$&</a>')
+    textContent = textContent.replace(mentionPattern, '<a href="/chad/$1">$&</a>')
     const text = $("<pre></pre>").html(textContent)
-
     
     message.append(link)
     message.append(date)
@@ -90,21 +82,12 @@ function chatPost(msgText){
 }
 
 // submit button
-$(".send").click(async () => {
-    if(typebox.val().length == 0){
-        return
-    }
-
-    const text = typebox.val()
+$("#send").click(async () => {
+    const text = typebox.val().trim()
+    if(!text) return
     typebox.val("")
-    
     chatPost(text)
 })
-
-// MESSAGE LINK COPY
-$(".copy").click(function(){
-    alert("The paragraph was clicked.");
-}); 
 
 //////////////////
 // STYLES

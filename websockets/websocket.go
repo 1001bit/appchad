@@ -19,6 +19,9 @@ type jsonMap map[string]interface{}
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 var Clients = make(map[string]Client)
@@ -31,23 +34,18 @@ func SetPage(userID, page string) {
 }
 
 func Socket(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
-
 	// upgrade connection
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("error connecting a websocket:", err)
 		return
 	}
+	defer conn.Close()
 
 	// setting up client
 	client := Client{conn, ""}
 	userID := misc.GetCookie("userID", w, r)
 	Clients[userID] = client
-
-	defer conn.Close()
 	defer delete(Clients, userID)
 
 	log.Println("connected a websocket for", misc.GetCookie("username", w, r))
@@ -62,7 +60,7 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 
 		// getting data
 		data := make(jsonMap)
-		data["userID"] = misc.GetCookie("userID", w, r)
+		data["userID"] = userID
 
 		err = json.Unmarshal(p, &data)
 		if err != nil {
@@ -75,17 +73,13 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			switch msgType {
 			// add message to database and send it to everybody
 			case "chat":
-				go chatPost(data)
+				chatPost(data)
 			}
 		}
 
-		// closing the connection
-		select {
-		case <-r.Context().Done():
+		if r.Context().Err() != nil {
 			log.Println("connection closed")
 			return
-		default:
-			continue
 		}
 	}
 }

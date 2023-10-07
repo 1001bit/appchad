@@ -85,6 +85,10 @@ pre {
   white-space: pre-wrap;
 }
 
+.link {
+  float: right;
+}
+
 .message {
   border-radius: 5px;
   padding: 3px;
@@ -101,7 +105,6 @@ pre {
 #chat {
   width: 98.5%;
   height: calc(80vh - 240px);
-
   overflow-y: scroll;
   overflow-x: hidden;
   word-break: break-all;
