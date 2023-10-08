@@ -11,8 +11,13 @@ import (
 )
 
 func reply(userID string, notificationMessageData jsonMap) {
+	// shorten text
+	if len(notificationMessageData["text"].(string)) > 80 {
+		notificationMessageData["text"] = notificationMessageData["text"].(string)[:80] + "..."
+	}
+	// prepare to send
 	notificationData := jsonMap{
-		"nType":       "reply",
+		"nType":       "chatReply",
 		"messageData": notificationMessageData,
 	}
 	NotificationSend(notificationData, userID)
@@ -56,10 +61,10 @@ func chatPost(messageData jsonMap) {
 
 	// send the message to every client
 	for _, client := range Clients {
-		if client.page != "chat" {
+		if client.Page != "chat" {
 			continue
 		}
-		if err := client.conn.WriteJSON(messageData); err != nil {
+		if err := client.Conn.WriteJSON(messageData); err != nil {
 			log.Println("error sending message to user:", err)
 			continue
 		}

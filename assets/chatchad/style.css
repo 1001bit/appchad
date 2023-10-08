@@ -80,11 +80,6 @@ img {
   object-fit: contain;
 }
 
-pre {
-  font-size: large;
-  white-space: pre-wrap;
-}
-
 .link {
   float: right;
 }
@@ -103,6 +98,10 @@ pre {
 }
 
 #chat {
+  pre {
+    white-space: pre-wrap;
+  }
+  font-size: large;
   width: 98.5%;
   height: calc(80vh - 240px);
   overflow-y: scroll;

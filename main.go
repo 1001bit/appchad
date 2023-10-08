@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func faviconHandler(w http.ResponseWriter, r *http.Request) {
+func FaviconHandler(w http.ResponseWriter, r *http.Request) {
 	// Open the favicon.ico file
 	file, err := os.Open("assets/favicon.ico")
 	if err != nil {

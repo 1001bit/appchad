@@ -91,5 +91,7 @@ func initStatements() {
 	prepareStatement("UserEdit", "UPDATE users SET description = ?, username = ? WHERE id = ?")
 
 	// notifications
-	prepareStatement("NotificationMake", "INSERT INTO notifications (data, reciever_id) VALUES (?, ?)")
+	prepareStatement("NotificationMake", "INSERT INTO notifications (data, receiver_id) VALUES (?, ?)")
+	prepareStatement("NotificationsGet", "SELECT data FROM notifications WHERE receiver_id = ?")
+	prepareStatement("NotificationsDelete", "DELETE FROM notifications WHERE receiver_id = ?")
 }

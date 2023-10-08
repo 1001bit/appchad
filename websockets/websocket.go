@@ -10,15 +10,13 @@ import (
 )
 
 type Client struct {
-	conn *websocket.Conn
-	page string
+	Conn *websocket.Conn
+	Page string
 }
 
 type jsonMap map[string]interface{}
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -28,7 +26,7 @@ var Clients = make(map[string]Client)
 
 func SetPage(userID, page string) {
 	if client, ok := Clients[userID]; ok {
-		client.page = page
+		client.Page = page
 		Clients[userID] = client
 	}
 }
@@ -47,6 +45,8 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 	userID := misc.GetCookie("userID", w, r)
 	Clients[userID] = client
 	defer delete(Clients, userID)
+	// get all notifications for them
+	NotificationsDatabaseGet(userID)
 
 	log.Println("connected a websocket for", misc.GetCookie("username", w, r))
 
@@ -77,6 +77,7 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		// closed connection
 		if r.Context().Err() != nil {
 			log.Println("connection closed")
 			return
