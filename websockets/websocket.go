@@ -24,13 +24,6 @@ var upgrader = websocket.Upgrader{
 
 var Clients = make(map[string]Client)
 
-func SetPage(userID, page string) {
-	if client, ok := Clients[userID]; ok {
-		client.Page = page
-		Clients[userID] = client
-	}
-}
-
 func Socket(w http.ResponseWriter, r *http.Request) {
 	// upgrade connection
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -74,6 +67,15 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			// add message to database and send it to everybody
 			case "chat":
 				chatPost(data)
+			// get what page the user is on
+			case "page":
+				client.Page = data["page"].(string)
+				Clients[userID] = client
+				switch client.Page {
+				case "chatchad":
+					// show all the messages
+					chatGet(Clients[userID].Conn)
+				}
 			}
 		}
 

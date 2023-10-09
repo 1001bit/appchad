@@ -1,5 +1,7 @@
 TODO:
 
 Tasks:
-- article comment replies
+- Make database notification store limit 50
+- Combine router's Sessions and websockets' Clients
 - make notifications for upvotes and comment replies
+- article comment replies

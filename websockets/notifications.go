@@ -47,8 +47,7 @@ func NotificationSend(data jsonMap, recID string) {
 	data["date"] = time.Now().Format("2006-01-02 15:04:05")
 
 	if client, ok := Clients[recID]; ok {
-		err := client.Conn.WriteJSON(data)
-		if err != nil {
+		if err := client.Conn.WriteJSON(data); err != nil {
 			log.Println("error sending:", err)
 			return
 		}

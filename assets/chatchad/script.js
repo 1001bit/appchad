@@ -4,29 +4,7 @@ const typebox = $("#typebox")
 const urlParams = new URLSearchParams(window.location.search);
 const messageId = urlParams.get("id")
 
-// fetch api and add all messages to page on starup
-$(document).ready(() => {
-    fetch(`/api/chatchad`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.length > 0){
-            addNewMessages(data)
-        }
-    }).then(() => {
-        if ($(`#${messageId}`)[0]){
-            distance = $(`#${messageId}`)[0].offsetTop - chatBox[0].offsetTop
-            chatBox.scrollTop(distance)
-            $(`#${messageId}`).addClass("highlight")
-        } else {
-            chatBox.scrollTop(chatBox[0].scrollHeight);
-        }
-    })
-    .catch(error => {
-        console.log(error)
-    })
-})
-
-// add messages to page from data
+// add many messages on startup
 function addNewMessages(data){
     const fragment = document.createDocumentFragment()
 
@@ -35,9 +13,19 @@ function addNewMessages(data){
         fragment.append(makeNewMessage(data[i])[0]);
     }
     chatBox.append(fragment)
+
+    // scroll
+    if ($(`#${messageId}`)[0]){
+        distance = $(`#${messageId}`)[0].offsetTop - chatBox[0].offsetTop
+        chatBox.scrollTop(distance)
+        $(`#${messageId}`).addClass("highlight")
+    } else {
+        chatBox.scrollTop(chatBox[0].scrollHeight);
+    }
 }
 
-function newMessage(data){
+// add new message from websocket
+function addNewMessage(data){
     const doScroll = chatBox.scrollTop() + chatBox.innerHeight() >= chatBox[0].scrollHeight-1;
     message = makeNewMessage(data)
     chatBox.append(message)

@@ -2,7 +2,10 @@ const socket = new WebSocket(`ws://${location.hostname}:8000/ws`)
 const notifBox = $("#notif-box")
 
 socket.onopen = (event) => {
-    console.log("connected")
+    $(document).ready(() => {
+        console.log("connected")
+        socket.send(JSON.stringify({type: "page", page: window.location.pathname.split("/")[1]}))
+    })
 }
 
 // when server sent a message - add the chat message to a wall
@@ -10,10 +13,16 @@ socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
     switch (data.type) {
         case "chat":
-            newMessage(data)
+            if (data["messages"]){
+                addNewMessages(data["messages"])
+                break;
+            } else if (data["message"]){
+                addNewMessage(data["message"])
+            }
             break;
         case "notification":
             notifications(data)
+            break
         default:
             break;
     }
