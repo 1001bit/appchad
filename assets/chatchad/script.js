@@ -41,7 +41,7 @@ function makeNewMessage(data){
 
     const link = $("<a></a>").text(`message id: ${data['id']}`).attr("href", "/chatchad?id="+data["id"]).addClass("link")
     const date = $("<pre></pre>").text(data['date'])
-    const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"])
+    const user = $("<a></a>").text(`${data['username']}:`).attr("href", "/chad/"+data["userID"]).addClass("author-name").val(data["userID"])
     const reply = $("<button>reply</button>")
     reply.on("click", () => {
         typebox.val(`@${data["userID"]}, ` + typebox.val())
