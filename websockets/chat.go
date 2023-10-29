@@ -2,6 +2,7 @@ package websockets
 
 import (
 	"database/sql"
+	"fmt"
 	"html"
 	"log"
 	"regexp"
@@ -19,6 +20,7 @@ type Message struct {
 	Date     string `json:"date"`
 }
 
+// send reply notification
 func reply(userID string, notificationMessage Message) {
 	// shorten text
 	if len(notificationMessage.Text) > 80 {
@@ -32,6 +34,36 @@ func reply(userID string, notificationMessage Message) {
 	NotificationSend(notificationData, userID)
 }
 
+// example: "@123, hello" to "123"
+func getIdFromMessage(message string) string {
+	return regexp.MustCompile(`[^0-9 ]+`).ReplaceAllString(strings.Split(message, " ")[0], "")
+}
+
+// reply format and escape string
+func formatMessage(original string) string {
+	if original[0] != '@' {
+		return original
+	}
+	result := original
+	// replace "@123, hello" to "<a href=123>username</a> hello"
+	var username string
+	userID := getIdFromMessage(result) // from "@123, hi" to "123"
+	// from userID to username
+	if err := database.Statements["UsernameGet"].QueryRow(userID).Scan(&username); err != nil {
+		if err == sql.ErrNoRows {
+			return result
+		}
+		log.Println("error querying a row:", err)
+	}
+
+	// replace
+	splitted := strings.Split(result, " ")
+	splitted[0] = fmt.Sprintf(`<a href="/chad/%s">%s<a>,`, userID, username)
+
+	result = strings.Join(splitted, " ")
+	return result
+}
+
 func chatPost(messageData jsonMap) {
 	if messageData["text"] == "" {
 		return
@@ -39,7 +71,7 @@ func chatPost(messageData jsonMap) {
 
 	var message Message
 
-	// insert message to database
+	// Insert message to database
 	if res, err := database.Statements["ChatPost"].Exec(messageData["userID"], messageData["text"]); err != nil {
 		log.Println("error executing statement:", err)
 		return
@@ -53,16 +85,19 @@ func chatPost(messageData jsonMap) {
 		log.Println("error querying a row:", err)
 		return
 	}
+
+	// Send message to everybody online
 	message.UserID = messageData["userID"].(string)
+	// antiscript
+	message.Text = html.EscapeString(messageData["text"].(string))
 
-	// antihack
-	messageData["text"] = html.EscapeString(messageData["text"].(string))
-	message.Text = messageData["text"].(string)
-
-	// check for replies
+	// reply send
 	if message.Text[0] == '@' {
-		reply(regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(strings.Split(message.Text, " ")[0], ""), message)
+		reply(getIdFromMessage(message.Text), message) // send reply notification
 	}
+
+	// format
+	message.Text = formatMessage(message.Text)
 
 	data := jsonMap{
 		"type":    "chat",
@@ -81,7 +116,7 @@ func chatPost(messageData jsonMap) {
 	}
 }
 
-// Get messages from database
+// Get all the messages from database
 func chatGet(conn *websocket.Conn) {
 	// get rows of messages
 	rows, err := database.Statements["ChatGet"].Query()
@@ -99,7 +134,7 @@ func chatGet(conn *websocket.Conn) {
 	for rows.Next() {
 		message := Message{}
 		rows.Scan(&message.ID, &message.Username, &message.UserID, &message.Text, &message.Date)
-		message.Text = html.EscapeString(message.Text)
+		message.Text = formatMessage(html.EscapeString(message.Text))
 		messages = append(messages, message)
 	}
 

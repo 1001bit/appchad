@@ -48,11 +48,7 @@ function makeNewMessage(data){
     })
     
     const imgPattern = /\[img\]([^\]]+?)\[\/img\]/g;
-    const mentionPattern = /@(\d+)/g
-
-    let textContent = data['text']
-    textContent = textContent.replace(imgPattern, '<img alt="[img][/img]" src="$1"></img>')
-    textContent = textContent.replace(mentionPattern, '<a href="/chad/$1">$&</a>')
+    const textContent = data['text'].replace(imgPattern, '<img alt="[img][/img]" src="$1"></img>')
     const text = $("<pre></pre>").html(textContent)
     
     message.append(link)

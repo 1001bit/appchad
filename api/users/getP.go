@@ -12,8 +12,7 @@ type User struct {
 // get user from database by id
 func GetUser(id string) (User, error) {
 	var user User
-	err := database.Statements["UserGet"].QueryRow(id).Scan(&user.Username, &user.Date, &user.Desc)
-	if err != nil {
+	if err := database.Statements["UserGet"].QueryRow(id).Scan(&user.Username, &user.Date, &user.Desc); err != nil {
 		return User{}, err
 	}
 	return user, nil

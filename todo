@@ -1,7 +1,5 @@
 TODO:
 
 Tasks:
-- replace @id to @username for replies
-- Combine router's Sessions and websockets' Clients
 - make notifications for upvotes and comment replies
 - article comment replies
