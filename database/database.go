@@ -32,13 +32,6 @@ func InitDatabase() {
 	}
 }
 
-// nickname exists in database
-func UserExists(username string) (bool, error) {
-	var exists bool
-	err := Statements["UserExists"].QueryRow(username).Scan(&exists)
-	return exists, err
-}
-
 // is token correct for username
 func CheckUserToken(userID, token string) (bool, error) {
 	var dbToken string

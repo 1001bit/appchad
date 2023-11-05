@@ -82,7 +82,7 @@ func initStatements() {
 	// auth
 	prepareStatement("Register", "INSERT INTO users (username, hash) VALUES (?, ?)")
 	prepareStatement("InsertToken", "UPDATE users SET token = ? WHERE id = ?")
-	prepareStatement("UserExists", "SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)")
+	prepareStatement("UserExists", "SELECT EXISTS(SELECT 1 FROM users WHERE username = ?)")
 	prepareStatement("TokenCorrect", "SELECT token FROM users WHERE id = ?")
 	prepareStatement("PasswordCorrect", "SELECT hash, id FROM users WHERE username = ?")
 

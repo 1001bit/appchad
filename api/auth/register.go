@@ -5,7 +5,6 @@ import (
 	"html"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/McCooll75/appchad/crypt"
 	"github.com/McCooll75/appchad/database"
@@ -40,7 +39,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// if exists - error
-	exists, err := database.UserExists(inputData.Username)
+	var exists bool
+	err = database.Statements["UserExists"].QueryRow(inputData.Username).Scan(&exists)
 
 	if err != nil {
 		log.Println(err)
@@ -79,5 +79,5 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success(w, r, strconv.Itoa(int(userID)), inputData.Username)
+	success(w, r, string(userID), inputData.Username)
 }
