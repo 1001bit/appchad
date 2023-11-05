@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -79,5 +80,5 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success(w, r, string(userID), inputData.Username)
+	success(w, r, fmt.Sprint(userID), inputData.Username)
 }
